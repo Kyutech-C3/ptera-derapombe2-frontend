@@ -7,6 +7,7 @@ import { registerSW } from 'virtual:pwa-register'
 
 import App from './pages/App'
 import Map from './pages/Map'
+import Camera from './pages/Camera'
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
   {
     path: '/map',
     element: <Map />,
+  },
+  {
+    path: '/camera',
+    element: <Camera />,
   },
 ])
 
