@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import reactLogo from '../assets/react.svg'
 import styled, { keyframes } from 'styled-components'
 
 import { FaGithub } from 'react-icons/fa'

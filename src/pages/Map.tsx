@@ -12,7 +12,7 @@ const center = {
   lng: 139.7673068,
 }
 
-function Maps() {
+function Map() {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: import.meta.env.VITE_ENV_GOOGLE_MAPS_API_KEY,
@@ -46,4 +46,4 @@ function Maps() {
   )
 }
 
-export default memo(Maps)
+export default memo(Map)

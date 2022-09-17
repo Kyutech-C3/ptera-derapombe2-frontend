@@ -5,8 +5,8 @@ import './index.css'
 // eslint-disable-next-line import/no-unresolved
 import { registerSW } from 'virtual:pwa-register'
 
-import App from './App'
-import Maps from './Maps'
+import App from './pages/App'
+import Map from './pages/Map'
 
 const router = createBrowserRouter([
   {
@@ -15,7 +15,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/map',
-    element: <Maps />,
+    element: <Map />,
   },
 ])
 
