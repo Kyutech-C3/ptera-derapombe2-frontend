@@ -38,8 +38,6 @@ function Map() {
   })
 
   const onLoad = useCallback((map: google.maps.Map) => {
-    const bounds = new window.google.maps.LatLngBounds(positionA)
-    map.fitBounds(bounds)
     const path = new google.maps.Polyline({
       path: [
         { lat: positionA.lat, lng: positionA.lng },
@@ -52,6 +50,7 @@ function Map() {
       strokeWeight: 2,
     })
     path.setMap(map)
+
     const polygon = new google.maps.Polygon({
       paths: [
         { lat: positionA.lat, lng: positionA.lng },
@@ -64,6 +63,24 @@ function Map() {
       fillOpacity: 0.15,
     })
     polygon.setMap(map)
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position: GeolocationPosition) => {
+          // 現在地
+          // const bounds = new window.google.maps.LatLngBounds({
+          //   lat: position.coords.latitude,
+          //   lng: position.coords.longitude,
+          // })
+          const bounds = new window.google.maps.LatLngBounds(positionA)
+          map.fitBounds(bounds)
+        },
+        (error) => {
+          alert(`位置情報の取得に失敗しました。エラーコード：${error.code}`)
+        }
+      )
+    }
+
     setMap(map)
   }, [])
 
@@ -97,7 +114,6 @@ function Map() {
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={positionA}
       onLoad={onLoad}
       options={mapOptions}
       onUnmount={onUnmount}
