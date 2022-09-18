@@ -89,6 +89,9 @@ function Map() {
   const mapOptions: google.maps.MapOptions = {
     minZoom: 12,
     maxZoom: 20,
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: false,
   }
 
   return isLoaded ? (
