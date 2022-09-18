@@ -11,15 +11,19 @@ const containerStyle: CSSProperties = {
   height: '100vh',
 }
 
-// 東京駅
-const tokyoStationPosition: google.maps.LatLngLiteral = {
-  lat: 35.6809591,
-  lng: 139.7673068,
-}
-
-const tangaPosition: google.maps.LatLngLiteral = {
+const positionA: google.maps.LatLngLiteral = {
   lat: 33.88199160909438,
   lng: 130.87870371446132,
+}
+
+const positionB: google.maps.LatLngLiteral = {
+  lat: 33.88220610094518,
+  lng: 130.8794740275319,
+}
+
+const positionC: google.maps.LatLngLiteral = {
+  lat: 33.881944125152216,
+  lng: 130.8789380227444,
 }
 
 const markerSizeConstant = 5
@@ -34,21 +38,32 @@ function Map() {
   })
 
   const onLoad = useCallback((map: google.maps.Map) => {
-    const bounds = new window.google.maps.LatLngBounds(tangaPosition)
+    const bounds = new window.google.maps.LatLngBounds(positionA)
     map.fitBounds(bounds)
     const path = new google.maps.Polyline({
       path: [
-        { lat: tangaPosition.lat, lng: tangaPosition.lng },
-        {
-          lat: 33.88220610094518,
-          lng: 130.8794740275319,
-        },
+        { lat: positionA.lat, lng: positionA.lng },
+        { lat: positionB.lat, lng: positionB.lng },
+        { lat: positionC.lat, lng: positionC.lng },
+        { lat: positionA.lat, lng: positionA.lng },
       ],
       geodesic: true,
       strokeColor: '#FF0000',
       strokeWeight: 2,
     })
     path.setMap(map)
+    const polygon = new google.maps.Polygon({
+      paths: [
+        { lat: positionA.lat, lng: positionA.lng },
+        { lat: positionB.lat, lng: positionB.lng },
+        { lat: positionC.lat, lng: positionC.lng },
+        { lat: positionA.lat, lng: positionA.lng },
+      ],
+      strokeOpacity: 0,
+      fillColor: '#FF0000',
+      fillOpacity: 0.15,
+    })
+    polygon.setMap(map)
     setMap(map)
   }, [])
 
@@ -58,14 +73,15 @@ function Map() {
 
   const markers: Markers[] = [
     {
-      position: tangaPosition,
+      position: positionA,
       icon: 'red',
     },
     {
-      position: {
-        lat: 33.88220610094518,
-        lng: 130.8794740275319,
-      },
+      position: positionB,
+      icon: 'green',
+    },
+    {
+      position: positionC,
       icon: 'green',
     },
   ]
@@ -78,7 +94,7 @@ function Map() {
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={tangaPosition}
+      center={positionA}
       onLoad={onLoad}
       options={mapOptions}
       onUnmount={onUnmount}
