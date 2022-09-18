@@ -36,6 +36,19 @@ function Map() {
   const onLoad = useCallback((map: google.maps.Map) => {
     const bounds = new window.google.maps.LatLngBounds(tangaPosition)
     map.fitBounds(bounds)
+    const path = new google.maps.Polyline({
+      path: [
+        { lat: tangaPosition.lat, lng: tangaPosition.lng },
+        {
+          lat: 33.88220610094518,
+          lng: 130.8794740275319,
+        },
+      ],
+      geodesic: true,
+      strokeColor: '#FF0000',
+      strokeWeight: 2,
+    })
+    path.setMap(map)
     setMap(map)
   }, [])
 
@@ -86,12 +99,20 @@ function Map() {
                       zoomValue * markerSizeConstant,
                       zoomValue * markerSizeConstant
                     ),
+                    anchor: new google.maps.Point(
+                      (zoomValue * markerSizeConstant) / 2,
+                      zoomValue * markerSizeConstant - 7
+                    ),
                   }
                 : {
                     url: '../assets/tanuki_pin.png',
                     scaledSize: new google.maps.Size(
                       zoomValue * markerSizeConstant,
                       zoomValue * markerSizeConstant
+                    ),
+                    anchor: new google.maps.Point(
+                      (zoomValue * markerSizeConstant) / 2,
+                      zoomValue * markerSizeConstant - 11
                     ),
                   }
             }
