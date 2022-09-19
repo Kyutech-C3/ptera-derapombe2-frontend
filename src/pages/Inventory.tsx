@@ -31,13 +31,13 @@ function Inventory() {
                         <p>C</p>
                     </section>
                 </article>
+                <div className="setHome">
+                    <button /*onClick={home}*/><img src="../assets/Home_icon.png" alt="button" height="40"/></button>
+                </div>
                 <footer>
-                    <div className="setHome">
-                        <button /*onClick={home}*/>HOME</button>
-                    </div>
                     <div className="setBtn">
-                        <button /*onClick={items}*/>ITEM</button>
-                        <button /*onClick={collection}*/>COLLECT</button>
+                        <button /*onClick={items}*/ className="itemBox"><img src="../assets/itemBox_icon.svg" alt="button" height="35" /></button>
+                        <button /*onClick={collection}*/><img src="../assets/collect_icon.png" alt="button" height="55" /></button>
                     </div>
                 </footer>
             </body>
