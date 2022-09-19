@@ -1,20 +1,34 @@
-import { gql, useQuery } from '@apollo/client'
-
-const TEST_QUERY = gql`
-  {
-    me {
-      id
-      level
-      group
-    }
-  }
-`
+import { Color, useMeQuery, useUserAddMutation } from '../graphql/generated'
 
 function GraphQL() {
-  const data = useQuery(TEST_QUERY)
+  const data = useMeQuery()
   console.log(data)
+  const [userAdd] = useUserAddMutation()
 
-  return <p>see console</p>
+  return (
+    <>
+      <p>see console</p>
+      <button
+        onClick={() => {
+          void userAdd({
+            variables: {
+              params: {
+                name: 'hogehoge',
+                group: Color.Green,
+                avatarNumber: 1,
+              },
+            },
+          })
+            .then((value) => console.log(value))
+            .catch((error) => {
+              console.error(error)
+            })
+        }}
+      >
+        userAdd
+      </button>
+    </>
+  )
 }
 
 export default GraphQL
