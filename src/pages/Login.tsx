@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { auth, provider } from '../firebase'
 import { FcGoogle } from 'react-icons/fc'
 import { useUserInfoQuery } from '../graphql/generated'
+import { displayName } from '../variables'
 
 const Container = styled.div`
   height: 100vh;
@@ -47,8 +48,8 @@ function Login() {
         Authorization: `Bearer ${cookies.accessToken ?? ''}`,
       },
     },
-    onError: (e) => {
-      console.log(e)
+    onError: (error) => {
+      console.error(error)
     },
   })
 
@@ -57,9 +58,11 @@ function Login() {
       .then(async (userCredential) => {
         const token = await userCredential.user.getIdToken()
         setCookie('accessToken', token)
+        userCredential.user.displayName !== null &&
+          displayName(userCredential.user.displayName)
       })
       .catch((error) => {
-        console.log(error)
+        console.error(error)
       })
   }
 
@@ -80,10 +83,6 @@ function Login() {
         <FcGoogle size="25" />
         <Text>Googleでログイン</Text>
       </LoginButton>
-      {/* <ul>
-        <li>displayName: {user?.user.displayName}</li>
-        <li>uid: {user?.user.uid}</li>
-      </ul> */}
     </Container>
   )
 }
