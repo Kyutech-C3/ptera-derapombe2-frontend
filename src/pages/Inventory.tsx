@@ -1,125 +1,198 @@
-import styled from "styled-components";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
+import styled from 'styled-components'
+import { BsBoxSeam } from 'react-icons/bs'
+import { BiLibrary } from 'react-icons/bi'
+import { AiOutlineHome } from 'react-icons/ai'
+import { useState } from 'react'
+import { Color } from '../graphql/generated'
 
-import Map from "./Map";
-
-// const inventBtn = 1;
-
-const Container = styled.div`
+const Container = styled.div<{ color: Color }>`
+  background-color: ${(props) =>
+    props.color == Color.Red ? '#ffe7e7' : '#eaffe7'};
+  background-image: ${(props) => `url(
+    ${
+      props.color == Color.Red
+        ? '../assets/images/bg-red.png'
+        : '../assets/images/bg-green.png'
+    })`};
+  color: black;
   display: grid;
-  color: rgba(0, 0, 0);
-  background-color: rgb(204, 255, 204);
-  background-image: url("../assets/backGreen.png");
-`;
+  justify-content: space-around;
+  align-items: center;
+`
 
-const Head = styled.header`
+const Head = styled.h2`
+  margin: 0 auto;
+  max-height: 10px;
   padding: 10px;
   text-align: center;
-`;
+`
 
 const Foot = styled.footer`
   margin: 0;
   display: flex;
   width: 100vw;
   min-height: 80px;
-`;
+`
 
-const SubBack = styled.article`
-  margin: auto;
+const SubBack = styled.article<{ color: Color }>`
+  margin: 20px auto;
+  padding: 20px 0px;
   width: 90%;
   height: 70vh;
-  background-color: white;
+  background-color: rgb(255, 255, 255, 0.8);
   border: 3px solid;
-  border-color: rgb(111, 214, 111);
+  border-color: ${(props) =>
+    props.color == Color.Red ? '#ff8f8f' : '#96ff89'};
   border-radius: 20px;
-`;
+`
 
 const SetContents = styled.section`
-  padding-top: 20px;
+  margin: 0 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, calc((100%) / 4));
+  grid-row-gap: 20px;
+  row-gap: 20px;
+  grid-column-gap: 20px;
+  -moz-column-gap: 20px;
+  column-gap: 20px;
+  justify-items: center;
+  justify-content: center;
+  /* padding-top: 20px;
   padding-bottom: 40px;
   display: flex;
   height: 20;
-  justify-content: space-around;
-`;
+  justify-content: space-around; */
+`
 
-const HomeLink = styled.a`
-  background: transparent;
-`;
+//後で書き換える
+// const HomeLink = styled.a`
+//   background: transparent;
+// `
 
 const Btn = styled.button`
-  background: transparent;
+  border-radius: 0;
   align-items: center;
-`;
+`
 
-const SetHome = styled(HomeLink)`
+const SetHome = styled(AiOutlineHome)`
+  display: flex;
   margin: auto;
-  margin-top: 10px;
-  margin-bottom: -20px;
-  width: 80px;
-  height: 80px;
+  margin-top: -10px;
+  margin-bottom: -25px;
+  padding: 10px;
+  width: 50px;
+  height: 50px;
   background-color: white;
   border-radius: 100%;
-  background-image: url("../assets/Home_icon.png");
-  background-size: 50px 50px;
-  background-repeat: no-repeat;
-  background-position: center;
-`;
+  z-index: 2;
+`
 
 const SetBtn = styled(Btn)`
   display: flex;
-  margin: -10px 0px 0;
-  width: 100%;
+  margin: -10px 0 0;
+  width: 100vw;
+  height: 60px;
   justify-content: space-around;
-`;
+`
+const InventoryBox = styled(SetBtn)<{ isAction: boolean }>`
+  background: ${(props) => (props.isAction ? 'transparent' : 'white')};
+`
+
+const CollectBox = styled(SetBtn)<{ isAction: boolean }>`
+  background: ${(props) => (props.isAction ? 'white' : 'transparent')};
+`
+
+const Items = styled.button`
+  margin: 0;
+  width: 100%;
+  height: 70px;
+  background-color: #5893e0;
+  align-items: center;
+  text-align: center;
+`
+
+const ItemEx = styled.div`
+  margin-top: -50vh;
+  width: 100%;
+  min-height: 30vh;
+  color: white;
+  background-color: rgb(100, 100, 100, 0.9);
+`
+
+const items = ['A', 'B', 'A', 'B', 'A', 'B', 'A', 'B']
+const itemExplanation = [
+  { name: 'aiueo', id: 't78uiyt678yyt' },
+  { name: 'oeuia', id: 't78uiyt678yyt' },
+  { name: 'aioeu', id: 't78uiyt678yyt' },
+]
 
 function Inventory() {
-  //   const [inventBtn, setInvetBtn] = useState(true);
+  const [inventoryBtn, setInventoryBtn] = useState(true)
+  const [visible, setVisible] = useState(true)
+
   return (
-    <Container>
-      <Tabs>
-        <TabPanel>
+    <Container color={Color.Red}>
+      {inventoryBtn ? (
+        <>
           <Head>ITEM</Head>
-          <SubBack>
+          <SubBack color={Color.Red}>
             <SetContents>
-              <p>A</p>
-              <p>B</p>
-              <p>C</p>
+              {items.map((item, i) => {
+                return (
+                  <Items onClick={() => setVisible(false)} key={i}>
+                    {item}
+                  </Items>
+                )
+              })}
             </SetContents>
           </SubBack>
-        </TabPanel>
-        <TabPanel>
-          <Head>COLLECT</Head>
-          <SubBack>
+        </>
+      ) : (
+        <>
+          <Head>COLLECTION</Head>
+          <SubBack color={Color.Red}>
             <SetContents>
-              <p>D</p>
-              <p>E</p>
-              <p>F</p>
+              {items.map((item, i) => {
+                return (
+                  <Items onClick={() => setVisible(false)} key={i}>
+                    {item}
+                  </Items>
+                )
+              })}
             </SetContents>
           </SubBack>
-        </TabPanel>
-        {/* <SetHome href="/map"></SetHome> */}
-        <Foot>
-          <TabList>
-            <Tab>
-              <SetBtn /*onClick={items}*/>
-                <img src="../assets/itemBox_icon.svg" alt="Item" height="50" />
-              </SetBtn>
-            </Tab>
-            <Tab>
-              <SetBtn /*onClick={collection}*/>
-                <img
-                  src="../assets/collect_icon.png"
-                  alt="Collect"
-                  height="50"
-                />
-              </SetBtn>
-            </Tab>
-          </TabList>
-        </Foot>
-      </Tabs>
+        </>
+      )}
+      {!visible && (
+        <ItemEx>
+          {itemExplanation.map((item, i) => {
+            return (
+              <div onClick={() => setVisible(false)} key={i}>
+                {item.name} : {item.id}
+              </div>
+            )
+          })}
+        </ItemEx>
+      )}
+      <SetHome href="/map">
+        <AiOutlineHome color="black" />
+      </SetHome>
+      <Foot>
+        <InventoryBox
+          onClick={() => setInventoryBtn(true)}
+          isAction={inventoryBtn}
+        >
+          <BsBoxSeam color="black" size="40" />
+        </InventoryBox>
+        <CollectBox
+          onClick={() => setInventoryBtn(false)}
+          isAction={inventoryBtn}
+        >
+          <BiLibrary color="black" size="40" />
+        </CollectBox>
+      </Foot>
     </Container>
-  );
+  )
 }
 
-export default Inventory;
+export default Inventory
