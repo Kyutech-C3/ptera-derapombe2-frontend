@@ -6,8 +6,6 @@ import { useState } from 'react'
 import { Color } from '../graphql/generated'
 
 const Container = styled.div<{ color: Color }>`
-  background-color: ${(props) =>
-    props.color == Color.Red ? '#ffe7e7' : '#eaffe7'};
   background-image: ${(props) => `url(
     ${
       props.color == Color.Red
@@ -16,64 +14,32 @@ const Container = styled.div<{ color: Color }>`
     })`};
   color: black;
   display: grid;
+  width: 100vw;
+  height: 100vh;
   justify-content: space-around;
   align-items: center;
 `
-
+/*** ヘッダー ***/
 const Head = styled.h2`
+  width: 100%;
   margin: 0 auto;
   max-height: 10px;
-  padding: 10px;
+  padding: 10px 0;
   text-align: center;
 `
-
+/*** フッター ***/
 const Foot = styled.footer`
   margin: 0;
   display: flex;
   width: 100vw;
-  min-height: 80px;
+  min-height: 50px;
 `
 
-const SubBack = styled.article<{ color: Color }>`
-  margin: 20px auto;
-  padding: 20px 0px;
-  width: 90%;
-  height: 70vh;
-  background-color: rgb(255, 255, 255, 0.8);
-  border: 3px solid;
-  border-color: ${(props) =>
-    props.color == Color.Red ? '#ff8f8f' : '#96ff89'};
-  border-radius: 20px;
-`
-
-const SetContents = styled.section`
-  margin: 0 10px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, calc((100%) / 4));
-  grid-row-gap: 20px;
-  row-gap: 20px;
-  grid-column-gap: 20px;
-  -moz-column-gap: 20px;
-  column-gap: 20px;
-  justify-items: center;
-  justify-content: center;
-  /* padding-top: 20px;
-  padding-bottom: 40px;
-  display: flex;
-  height: 20;
-  justify-content: space-around; */
-`
-
-//後で書き換える
-// const HomeLink = styled.a`
-//   background: transparent;
-// `
-
+/*** ボタン ***/
 const Btn = styled.button`
   border-radius: 0;
-  align-items: center;
+  text-align: center;
 `
-
 const SetHome = styled(AiOutlineHome)`
   display: flex;
   margin: auto;
@@ -86,44 +52,130 @@ const SetHome = styled(AiOutlineHome)`
   border-radius: 100%;
   z-index: 2;
 `
-
 const SetBtn = styled(Btn)`
   display: flex;
-  margin: -10px 0 0;
+  /* margin: -10px 0 0; */
   width: 100vw;
-  height: 60px;
+  height: 50px;
+  align-items: center;
   justify-content: space-around;
 `
-const InventoryBox = styled(SetBtn)<{ isAction: boolean }>`
-  background: ${(props) => (props.isAction ? 'transparent' : 'white')};
+const CloseBtn = styled.button`
+  width: 20vw;
+  height: 30vh;
+  background-color: black;
+  color: white;
+  text-align: center;
+  border-radius: 0 8px 8px 0;
 `
 
+/*** アイテム表示場所 ***/
+const SubBack = styled.article<{ color: Color }>`
+  margin: 20px auto;
+  padding: 20px 0px;
+  width: 80%;
+  height: 70vh;
+  background-color: rgb(255, 255, 255, 0.8);
+  border: 3px solid;
+  border-color: ${(props) =>
+    props.color == Color.Red ? '#ff8f8f' : '#96ff89'};
+  border-radius: 20px;
+`
+const SetContents = styled.section`
+  margin: 0 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, calc((100%) / 4));
+  grid-row-gap: 20px;
+  row-gap: 20px;
+  grid-column-gap: 20px;
+  -moz-column-gap: 20px;
+  column-gap: 20px;
+  justify-items: center;
+  justify-content: center;
+`
+
+/*** インベントリ中のアイテム ***/
+const ItemBox = styled(SetBtn)<{ isAction: boolean }>`
+  background: ${(props) => (props.isAction ? 'transparent' : 'white')};
+`
 const CollectBox = styled(SetBtn)<{ isAction: boolean }>`
   background: ${(props) => (props.isAction ? 'white' : 'transparent')};
 `
-
 const Items = styled.button`
   margin: 0;
+  padding: 0;
   width: 100%;
   height: 70px;
-  background-color: #5893e0;
+  background-color: transparent;
   align-items: center;
   text-align: center;
 `
 
-const ItemEx = styled.div`
+/*** アイテムの詳細表示関連 ***/
+const ItemExWin = styled.div`
+  display: flex;
+  margin: 0;
   margin-top: -50vh;
   width: 100%;
-  min-height: 30vh;
+  height: 30vh;
   color: white;
+  border-radius: 0 8px 8px 0;
   background-color: rgb(100, 100, 100, 0.9);
 `
+const ItemDetails = styled.div`
+  display: flex;
+  background-color: transparent;
+  width: 80vw;
+`
+const ItemExIcon = styled.div`
+  padding: 10vh 0;
+  /* padding-left: 1vw; */
+  width: 25vw;
+  text-align: center;
+`
+const FlexColumn = styled.div`
+  /* display: flex; */
+  flex-direction: column;
+`
+const ItemEx = styled.div`
+  margin: 0px;
+  padding: 0 2.5vw;
+  padding-top: 5vh;
+  width: 50vw;
+  /* height: calc(30vh / 3); */
+  font-size: 20px;
+  text-align: left;
+  overflow-wrap: break-word;
+`
 
-const items = ['A', 'B', 'A', 'B', 'A', 'B', 'A', 'B']
+const items = [
+  '../assets/images/attack-1.png',
+  '../assets/images/attack-2.png',
+  '../assets/images/attack-3.png',
+  '../assets/images/attack-sign-1.png',
+  '../assets/images/attack-sign-2.png',
+  '../assets/images/attack-sign-3.png',
+  '../assets/images/endurance-1.png',
+  '../assets/images/endurance-2.png',
+]
+const colloects = [
+  '../assets/images/endurance-1.png',
+  '../assets/images/endurance-2.png',
+  '../assets/images/endurance-3.png',
+  '../assets/images/attack-1.png',
+  '../assets/images/attack-2.png',
+  '../assets/images/attack-3.png',
+  '../assets/images/attack-sign-2.png',
+  '../assets/images/attack-sign-3.png',
+]
 const itemExplanation = [
-  { name: 'aiueo', id: 't78uiyt678yyt' },
-  { name: 'oeuia', id: 't78uiyt678yyt' },
-  { name: 'aioeu', id: 't78uiyt678yyt' },
+  {
+    icon: '../assets/images/attack-1.png',
+    name: 'Name',
+    detail: 'apoiargavfnakuhjeujnrfdxcf',
+  },
+  // { name: 'Name' },
+  // { detail: 'Detail' },
 ]
 
 function Inventory() {
@@ -139,8 +191,13 @@ function Inventory() {
             <SetContents>
               {items.map((item, i) => {
                 return (
-                  <Items onClick={() => setVisible(false)} key={i}>
-                    {item}
+                  <Items
+                    onClick={() => {
+                      setVisible(false)
+                    }}
+                    key={i}
+                  >
+                    <img src={item} width="70px"></img>
                   </Items>
                 )
               })}
@@ -152,10 +209,10 @@ function Inventory() {
           <Head>COLLECTION</Head>
           <SubBack color={Color.Red}>
             <SetContents>
-              {items.map((item, i) => {
+              {colloects.map((item, i) => {
                 return (
                   <Items onClick={() => setVisible(false)} key={i}>
-                    {item}
+                    <img src={item} width="70px"></img>
                   </Items>
                 )
               })}
@@ -164,28 +221,46 @@ function Inventory() {
         </>
       )}
       {!visible && (
-        <ItemEx>
+        <ItemExWin>
           {itemExplanation.map((item, i) => {
             return (
-              <div onClick={() => setVisible(false)} key={i}>
-                {item.name} : {item.id}
-              </div>
+              <ItemDetails
+                onClick={() => {
+                  setInventoryBtn(false)
+                }}
+                key={i}
+              >
+                <ItemExIcon>
+                  <img src={item.icon} width="70"></img>
+                </ItemExIcon>
+                <FlexColumn>
+                  <ItemEx>{item.name}</ItemEx>
+                  <ItemEx>{item.detail}</ItemEx>
+                </FlexColumn>
+              </ItemDetails>
             )
           })}
-        </ItemEx>
+          <CloseBtn onClick={() => setVisible(true)}>close</CloseBtn>
+        </ItemExWin>
       )}
       <SetHome href="/map">
         <AiOutlineHome color="black" />
       </SetHome>
       <Foot>
-        <InventoryBox
-          onClick={() => setInventoryBtn(true)}
+        <ItemBox
+          onClick={() => {
+            setInventoryBtn(true)
+            setVisible(true)
+          }}
           isAction={inventoryBtn}
         >
           <BsBoxSeam color="black" size="40" />
-        </InventoryBox>
+        </ItemBox>
         <CollectBox
-          onClick={() => setInventoryBtn(false)}
+          onClick={() => {
+            setInventoryBtn(false)
+            setVisible(true)
+          }}
           isAction={inventoryBtn}
         >
           <BiLibrary color="black" size="40" />
