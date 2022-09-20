@@ -65,14 +65,14 @@ function Map() {
     polygon.setMap(map)
 
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
+      navigator.geolocation.watchPosition(
         (position: GeolocationPosition) => {
           // 現在地
-          // const bounds = new window.google.maps.LatLngBounds({
-          //   lat: position.coords.latitude,
-          //   lng: position.coords.longitude,
-          // })
-          const bounds = new window.google.maps.LatLngBounds(positionA)
+          const bounds = new window.google.maps.LatLngBounds({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          })
+          // const bounds = new window.google.maps.LatLngBounds(positionA)
           map.fitBounds(bounds)
         },
         (error) => {
