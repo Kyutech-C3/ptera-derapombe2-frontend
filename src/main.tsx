@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 // eslint-disable-next-line import/no-unresolved
 import { registerSW } from 'virtual:pwa-register'
+import { CookiesProvider } from 'react-cookie'
 import {
   ApolloClient,
   InMemoryCache,
@@ -45,12 +46,8 @@ const router = createBrowserRouter([
   },
 ])
 
-const firebaseAccessToken = ''
 const link = createHttpLink({
   uri: import.meta.env.VITE_ENV_GRAPHQL_URL,
-  headers: {
-    Authorization: `Bearer ${firebaseAccessToken}`,
-  },
 })
 
 const client = new ApolloClient({
@@ -60,9 +57,11 @@ const client = new ApolloClient({
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <RouterProvider router={router} />
-    </ApolloProvider>
+    <CookiesProvider>
+      <ApolloProvider client={client}>
+        <RouterProvider router={router} />
+      </ApolloProvider>
+    </CookiesProvider>
   </React.StrictMode>
 )
 

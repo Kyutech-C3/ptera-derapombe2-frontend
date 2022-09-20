@@ -1,8 +1,11 @@
-import { signInWithPopup, UserCredential } from 'firebase/auth'
-import { useState } from 'react'
+import { signInWithPopup } from 'firebase/auth'
+import { useEffect } from 'react'
+import { useCookies } from 'react-cookie'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { auth, provider } from '../firebase'
 import { FcGoogle } from 'react-icons/fc'
+import { useUserInfoQuery } from '../graphql/generated'
 
 const Container = styled.div`
   height: 100vh;
@@ -31,17 +34,44 @@ const Text = styled.span`
 `
 
 function Login() {
-  const [user, setUser] = useState<UserCredential | null>(null)
+  const navigate = useNavigate()
+  const [cookies, setCookie] = useCookies<
+    'accessToken',
+    {
+      accessToken?: string
+    }
+  >(['accessToken'])
+  const result = useUserInfoQuery({
+    context: {
+      headers: {
+        Authorization: `Bearer ${cookies.accessToken ?? ''}`,
+      },
+    },
+    onError: (e) => {
+      console.log(e)
+    },
+  })
+
   const handleLogin = () => {
     signInWithPopup(auth, provider)
-      .then((userCredential) => {
-        setUser(userCredential)
-        console.log(userCredential)
+      .then(async (userCredential) => {
+        const token = await userCredential.user.getIdToken()
+        setCookie('accessToken', token)
       })
       .catch((error) => {
         console.log(error)
       })
   }
+
+  useEffect(() => {
+    if (cookies.accessToken !== undefined) {
+      if (result.data === undefined) {
+        navigate('/team-select')
+      } else {
+        navigate('/map')
+      }
+    }
+  }, [cookies.accessToken, result])
 
   return (
     <Container>
