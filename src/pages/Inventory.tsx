@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
+import { BsBoxSeam } from 'react-icons/bs'
+import { BiLibrary } from 'react-icons/bi'
 
 // const inventBtn = 1;
 
@@ -87,7 +89,7 @@ function Inventory() {
           </SubBack>
         </TabPanel>
         <TabPanel>
-          <Head>COLLECT</Head>
+          <Head>COLLECTION</Head>
           <SubBack>
             <SetContents>
               <p>D</p>
@@ -100,16 +102,13 @@ function Inventory() {
           <TabList>
             <Tab>
               <SetBtn /*onClick={items}*/>
-                <img src="../assets/itemBox_icon.svg" alt="Item" height="50" />
+                {/* <img src="../assets/itemBox_icon.svg" alt="Item" height="50" /> */}
+                <BsBoxSeam color="black" size="50" />
               </SetBtn>
             </Tab>
             <Tab>
               <SetBtn /*onClick={collection}*/>
-                <img
-                  src="../assets/collect_icon.png"
-                  alt="Collect"
-                  height="50"
-                />
+                <BiLibrary color="black" size="50" />
               </SetBtn>
             </Tab>
           </TabList>
