@@ -1,5 +1,6 @@
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import { CSSProperties, memo, useCallback, useState } from 'react'
+import BottomNavigationBar from '../components/BottomNavigationBar'
 
 type Markers = {
   position: google.maps.LatLngLiteral
@@ -8,7 +9,7 @@ type Markers = {
 
 const containerStyle: CSSProperties = {
   width: '100vw',
-  height: '100vh',
+  height: '90vh',
 }
 
 const positionA: google.maps.LatLngLiteral = {
@@ -112,49 +113,52 @@ function Map() {
   }
 
   return isLoaded ? (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      onLoad={onLoad}
-      options={mapOptions}
-      onUnmount={onUnmount}
-      onZoomChanged={() => {
-        setZoomValue(map?.getZoom() ?? 19)
-      }}
-    >
-      {markers.map((marker, i) => {
-        return (
-          <Marker
-            position={marker.position}
-            key={i}
-            icon={
-              marker.icon == 'red'
-                ? {
-                    url: '../assets/images/pin-red.png',
-                    scaledSize: new google.maps.Size(
-                      zoomValue * markerSizeConstant,
-                      zoomValue * markerSizeConstant
-                    ),
-                    anchor: new google.maps.Point(
-                      (zoomValue * markerSizeConstant) / 2,
-                      zoomValue * markerSizeConstant - 7
-                    ),
-                  }
-                : {
-                    url: '../assets/images/pin-green.png',
-                    scaledSize: new google.maps.Size(
-                      zoomValue * markerSizeConstant,
-                      zoomValue * markerSizeConstant
-                    ),
-                    anchor: new google.maps.Point(
-                      (zoomValue * markerSizeConstant) / 2,
-                      zoomValue * markerSizeConstant - 11
-                    ),
-                  }
-            }
-          />
-        )
-      })}
-    </GoogleMap>
+    <>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        onLoad={onLoad}
+        options={mapOptions}
+        onUnmount={onUnmount}
+        onZoomChanged={() => {
+          setZoomValue(map?.getZoom() ?? 19)
+        }}
+      >
+        {markers.map((marker, i) => {
+          return (
+            <Marker
+              position={marker.position}
+              key={i}
+              icon={
+                marker.icon == 'red'
+                  ? {
+                      url: '../assets/images/pin-red.png',
+                      scaledSize: new google.maps.Size(
+                        zoomValue * markerSizeConstant,
+                        zoomValue * markerSizeConstant
+                      ),
+                      anchor: new google.maps.Point(
+                        (zoomValue * markerSizeConstant) / 2,
+                        zoomValue * markerSizeConstant - 7
+                      ),
+                    }
+                  : {
+                      url: '../assets/images/pin-green.png',
+                      scaledSize: new google.maps.Size(
+                        zoomValue * markerSizeConstant,
+                        zoomValue * markerSizeConstant
+                      ),
+                      anchor: new google.maps.Point(
+                        (zoomValue * markerSizeConstant) / 2,
+                        zoomValue * markerSizeConstant - 11
+                      ),
+                    }
+              }
+            />
+          )
+        })}
+      </GoogleMap>
+      <BottomNavigationBar />
+    </>
   ) : (
     <></>
   )
