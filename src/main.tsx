@@ -14,6 +14,7 @@ import {
 import App from './pages/App'
 import Map from './pages/Map'
 import Camera from './pages/Camera'
+import Inventory from './pages/Inventory'
 import Login from './pages/Login'
 import GraphQL from './pages/GraphQL'
 
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: '/camera',
     element: <Camera />,
+  },
+  {
+    path: '/inventory',
+    element: <Inventory />,
   },
   {
     path: '/login',
