@@ -129,7 +129,7 @@ function Map() {
             icon={
               marker.icon == 'red'
                 ? {
-                    url: '../assets/kitsune_pin.png',
+                    url: '../assets/images/pin-red.png',
                     scaledSize: new google.maps.Size(
                       zoomValue * markerSizeConstant,
                       zoomValue * markerSizeConstant
@@ -140,7 +140,7 @@ function Map() {
                     ),
                   }
                 : {
-                    url: '../assets/tanuki_pin.png',
+                    url: '../assets/images/pin-green.png',
                     scaledSize: new google.maps.Size(
                       zoomValue * markerSizeConstant,
                       zoomValue * markerSizeConstant

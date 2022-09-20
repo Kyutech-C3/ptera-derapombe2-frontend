@@ -1,8 +1,6 @@
-import styled from "styled-components";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
-
-import Map from "./Map";
+import styled from 'styled-components'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import 'react-tabs/style/react-tabs.css'
 
 // const inventBtn = 1;
 
@@ -10,20 +8,20 @@ const Container = styled.div`
   display: grid;
   color: rgba(0, 0, 0);
   background-color: rgb(204, 255, 204);
-  background-image: url("../assets/backGreen.png");
-`;
+  background-image: url('../assets/images/bg-green.png');
+`
 
 const Head = styled.header`
   padding: 10px;
   text-align: center;
-`;
+`
 
 const Foot = styled.footer`
   margin: 0;
   display: flex;
   width: 100vw;
   min-height: 80px;
-`;
+`
 
 const SubBack = styled.article`
   margin: auto;
@@ -33,7 +31,7 @@ const SubBack = styled.article`
   border: 3px solid;
   border-color: rgb(111, 214, 111);
   border-radius: 20px;
-`;
+`
 
 const SetContents = styled.section`
   padding-top: 20px;
@@ -41,16 +39,16 @@ const SetContents = styled.section`
   display: flex;
   height: 20;
   justify-content: space-around;
-`;
+`
 
 const HomeLink = styled.a`
   background: transparent;
-`;
+`
 
 const Btn = styled.button`
   background: transparent;
   align-items: center;
-`;
+`
 
 const SetHome = styled(HomeLink)`
   margin: auto;
@@ -60,18 +58,18 @@ const SetHome = styled(HomeLink)`
   height: 80px;
   background-color: white;
   border-radius: 100%;
-  background-image: url("../assets/Home_icon.png");
+  background-image: url('../assets/Home_icon.png');
   background-size: 50px 50px;
   background-repeat: no-repeat;
   background-position: center;
-`;
+`
 
 const SetBtn = styled(Btn)`
   display: flex;
   margin: -10px 0px 0;
   width: 100%;
   justify-content: space-around;
-`;
+`
 
 function Inventory() {
   //   const [inventBtn, setInvetBtn] = useState(true);
@@ -98,7 +96,6 @@ function Inventory() {
             </SetContents>
           </SubBack>
         </TabPanel>
-        {/* <SetHome href="/map"></SetHome> */}
         <Foot>
           <TabList>
             <Tab>
@@ -119,7 +116,7 @@ function Inventory() {
         </Foot>
       </Tabs>
     </Container>
-  );
+  )
 }
 
-export default Inventory;
+export default Inventory
