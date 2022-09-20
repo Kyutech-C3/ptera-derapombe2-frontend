@@ -1,6 +1,8 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { CSSProperties, memo, useCallback, useState } from 'react'
+import styled from 'styled-components'
 import { Color } from '../graphql/generated'
+import MapActionButton from './MapActionButton'
 
 type Markers = {
   position: google.maps.LatLngLiteral
@@ -52,9 +54,22 @@ const placedMarkers: Markers[] = [
 
 const markerSizeConstant = 5
 
+const Container = styled.div`
+  position: relative;
+`
+
+const Blur = styled.div`
+  position: absolute;
+  width: 100vw;
+  height: 92%;
+  bottom: 0;
+  box-shadow: inset 0px -25px 20px 5px rgb(0 0 0 / 57%);
+`
+
 function GoogleMaps() {
   const [map, setMap] = useState<google.maps.Map | null>(null)
   const [zoomValue, setZoomValue] = useState<number>(19)
+  const [showAction, setShowAction] = useState(false)
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -89,6 +104,10 @@ function GoogleMaps() {
                   zoomValue * markerSizeConstant - 11
                 ),
               },
+      })
+      marker.addListener('click', () => {
+        map.setCenter(placedMarker.position)
+        setShowAction(true)
       })
       marker.setMap(map)
     })
@@ -144,15 +163,25 @@ function GoogleMaps() {
   }, [])
 
   return isLoaded ? (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      onLoad={onLoad}
-      options={mapOptions}
-      onUnmount={onUnmount}
-      onZoomChanged={() => {
-        setZoomValue(map?.getZoom() ?? 19)
-      }}
-    />
+    <Container>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        onLoad={onLoad}
+        options={mapOptions}
+        onUnmount={onUnmount}
+        onZoomChanged={() => {
+          setZoomValue(map?.getZoom() ?? 19)
+        }}
+      />
+      {showAction ? (
+        <>
+          <Blur />
+          <MapActionButton onClickCloseButton={() => setShowAction(false)} />
+        </>
+      ) : (
+        <></>
+      )}
+    </Container>
   ) : (
     <p>...Loading</p>
   )
