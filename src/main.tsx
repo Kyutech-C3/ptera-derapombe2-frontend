@@ -18,6 +18,7 @@ import Camera from './pages/Camera'
 import Inventory from './pages/Inventory'
 import Login from './pages/Login'
 import GraphQL from './pages/GraphQL'
+import TeamSelect from './pages/TeamSelect'
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
   {
     path: '/graphql',
     element: <GraphQL />,
+  },
+  {
+    path: '/team-select',
+    element: <TeamSelect />,
   },
 ])
 
