@@ -116,7 +116,9 @@ const ItemsCount = styled.div`
   transform: translate(48px, 40px);
   width: 25px;
   height: 25px;
-  background-color: rgb(36, 98, 255, 0.8);
+  color: black;
+  box-shadow: 2px 2px 2px #8a939c;
+  background-color: rgb(220, 220, 220);
   border-radius: 100%;
   text-align: center;
 `
@@ -126,12 +128,13 @@ const ItemExWin = styled.div`
   position: absolute;
   display: flex;
   margin: 0;
-  bottom: 10vh;
+  bottom: 11vh;
   width: 100%;
   height: 30vh;
-  color: white;
+  color: black;
+  box-shadow: 5px 5px 5px #8a939c;
   border-radius: 0 8px 8px 0;
-  background-color: rgb(100, 100, 100, 0.9);
+  background-color: rgb(220, 220, 220, 0.9);
 `
 const ItemDetails = styled.div`
   display: flex;
@@ -281,7 +284,7 @@ function Inventory() {
     <Container color={Color.Green}>
       {inventoryBtn ? (
         <>
-          <Head>ITEM</Head>
+          <Head>アイテム</Head>
           <SubBack color={Color.Green}>
             <SetContents>
               {itemExplanation.map((item, i) => {
@@ -305,7 +308,7 @@ function Inventory() {
         </>
       ) : (
         <>
-          <Head>COLLECTION</Head>
+          <Head>コレクション</Head>
           <SubBack color={Color.Green}>
             <SetContents>
               {colloects.map((item, i) => {
