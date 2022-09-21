@@ -18,6 +18,7 @@ function GraphQL() {
             variables: {
               name: 'hogehoge',
               group: Color.Green,
+              avatarUrl: '',
             },
           })
             .then((value) => console.log(value))
