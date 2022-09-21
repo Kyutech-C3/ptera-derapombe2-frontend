@@ -27,14 +27,15 @@ const Text = styled.span`
 `
 
 type BottomNavigationBar = {
+  groupColor: Color
   displaySignDetail: boolean
 }
 
 function BottomNavigationBar(props: BottomNavigationBar) {
-  const { displaySignDetail } = props
+  const { groupColor, displaySignDetail } = props
 
   return (
-    <Container color={Color.Green} showSignDetail={displaySignDetail}>
+    <Container color={groupColor} showSignDetail={displaySignDetail}>
       <IconText to="/inventory">
         <BsHandbag color="black" size="30" />
         <Text>インベントリ</Text>

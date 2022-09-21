@@ -17,13 +17,6 @@ export type Scalars = {
   Upload: any;
 };
 
-export type AttackResult = {
-  __typename?: 'AttackResult';
-  getExpPoint: Scalars['Int'];
-  items: Array<Item>;
-  lossHitPoint: Scalars['Int'];
-};
-
 export enum Color {
   Green = 'GREEN',
   Red = 'RED'
@@ -31,8 +24,8 @@ export enum Color {
 
 export type ExhumeResult = {
   __typename?: 'ExhumeResult';
-  getExpPoint: Scalars['Int'];
-  getItems: Array<ItemResult>;
+  expPoint: Scalars['Int'];
+  items: Array<Item>;
 };
 
 export type Gallery = {
@@ -57,12 +50,6 @@ export enum ItemEffect {
   Resistance = 'RESISTANCE'
 }
 
-export type ItemResult = {
-  __typename?: 'ItemResult';
-  item: Item;
-  numberOfAcquisition: Scalars['Int'];
-};
-
 export type MapInfo = {
   __typename?: 'MapInfo';
   polygons: Array<Polygon>;
@@ -72,32 +59,35 @@ export type MapInfo = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addItem: Array<Item>;
   addUser: User;
-  attackSign: AttackResult;
+  attachItem: Array<Item>;
+  attackSign: UpdateSignData;
   captureSign: Sign;
   changeItem: Array<Item>;
   deleteItem: Array<Item>;
   exhumeSign: Array<ExhumeResult>;
+  healSign: UpdateSignData;
   predictImage: PredictResult;
   registSign: Sign;
   updateUser: User;
 };
 
 
-export type MutationAddItemArgs = {
-  havingItemId: Scalars['String'];
-};
-
-
 export type MutationAddUserArgs = {
+  avatarUrl: Scalars['String'];
   group: Color;
   name: Scalars['String'];
 };
 
 
+export type MutationAttachItemArgs = {
+  itemId: Scalars['String'];
+  signId: Scalars['String'];
+};
+
+
 export type MutationAttackSignArgs = {
-  havingItemId: Scalars['String'];
+  itemId: Scalars['String'];
   signId: Scalars['String'];
 };
 
@@ -108,17 +98,25 @@ export type MutationCaptureSignArgs = {
 
 
 export type MutationChangeItemArgs = {
-  havingItemId: Scalars['String'];
-  usingItemId: Scalars['String'];
+  newItemId: Scalars['String'];
+  oldItemId: Scalars['String'];
+  signId: Scalars['String'];
 };
 
 
 export type MutationDeleteItemArgs = {
-  usingItemId: Scalars['String'];
+  itemId: Scalars['String'];
+  signId: Scalars['String'];
 };
 
 
 export type MutationExhumeSignArgs = {
+  signId: Scalars['String'];
+};
+
+
+export type MutationHealSignArgs = {
+  itemId: Scalars['String'];
   signId: Scalars['String'];
 };
 
@@ -191,17 +189,18 @@ export type Segment = {
 export type Sign = {
   __typename?: 'Sign';
   baseSignTypes: Array<Scalars['Int']>;
-  group: Color;
-  hitPoint: Scalars['Int'];
+  createdAt: Scalars['DateTime'];
+  group?: Maybe<Color>;
+  hitPoint?: Maybe<Scalars['Int']>;
   id: Scalars['String'];
   imagePath: Scalars['String'];
-  items: Array<Item>;
+  items?: Maybe<Array<Item>>;
   latitude: Scalars['Float'];
   longitude: Scalars['Float'];
   maxHitPoint: Scalars['Int'];
   maxItemSlot: Scalars['Int'];
   maxLinkSlot: Scalars['Int'];
-  owner: User;
+  owner?: Maybe<User>;
 };
 
 export type SignInfo = {
@@ -223,8 +222,16 @@ export type SuggestResult = {
   signType: Scalars['Int'];
 };
 
+export type UpdateSignData = {
+  __typename?: 'UpdateSignData';
+  expPoint: Scalars['Int'];
+  hitPointDiff: Scalars['Int'];
+  sign: Sign;
+};
+
 export type User = {
   __typename?: 'User';
+  avatarUrl: Scalars['String'];
   createdAt: Scalars['DateTime'];
   expPoint: Scalars['Int'];
   group: Color;
@@ -237,24 +244,31 @@ export type User = {
 export type AddUserMutationVariables = Exact<{
   name: Scalars['String'];
   group: Color;
+  avatarUrl: Scalars['String'];
 }>;
 
 
-export type AddUserMutation = { __typename?: 'Mutation', addUser: { __typename?: 'User', id: string, name: string, level: number, group: Color } };
+export type AddUserMutation = { __typename?: 'Mutation', addUser: { __typename?: 'User', id: string, name: string, level: number, group: Color, avatarUrl: string } };
+
+export type MapPageInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MapPageInfoQuery = { __typename?: 'Query', user: { __typename?: 'User', name: string, level: number, expPoint: number, group: Color, avatarUrl: string }, powerRatio: { __typename?: 'PowerRatio', green: number, red: number } };
 
 export type UserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserInfoQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, level: number, group: Color } };
+export type UserInfoQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, level: number, group: Color, avatarUrl: string } };
 
 
 export const AddUserDocument = gql`
-    mutation addUser($name: String!, $group: Color!) {
-  addUser(name: $name, group: $group) {
+    mutation addUser($name: String!, $group: Color!, $avatarUrl: String!) {
+  addUser(name: $name, group: $group, avatarUrl: $avatarUrl) {
     id
     name
     level
     group
+    avatarUrl
   }
 }
     `;
@@ -275,6 +289,7 @@ export type AddUserMutationFn = Apollo.MutationFunction<AddUserMutation, AddUser
  *   variables: {
  *      name: // value for 'name'
  *      group: // value for 'group'
+ *      avatarUrl: // value for 'avatarUrl'
  *   },
  * });
  */
@@ -285,12 +300,55 @@ export function useAddUserMutation(baseOptions?: Apollo.MutationHookOptions<AddU
 export type AddUserMutationHookResult = ReturnType<typeof useAddUserMutation>;
 export type AddUserMutationResult = Apollo.MutationResult<AddUserMutation>;
 export type AddUserMutationOptions = Apollo.BaseMutationOptions<AddUserMutation, AddUserMutationVariables>;
+export const MapPageInfoDocument = gql`
+    query MapPageInfo {
+  user {
+    name
+    level
+    expPoint
+    group
+    avatarUrl
+  }
+  powerRatio {
+    green
+    red
+  }
+}
+    `;
+
+/**
+ * __useMapPageInfoQuery__
+ *
+ * To run a query within a React component, call `useMapPageInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMapPageInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMapPageInfoQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMapPageInfoQuery(baseOptions?: Apollo.QueryHookOptions<MapPageInfoQuery, MapPageInfoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MapPageInfoQuery, MapPageInfoQueryVariables>(MapPageInfoDocument, options);
+      }
+export function useMapPageInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MapPageInfoQuery, MapPageInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MapPageInfoQuery, MapPageInfoQueryVariables>(MapPageInfoDocument, options);
+        }
+export type MapPageInfoQueryHookResult = ReturnType<typeof useMapPageInfoQuery>;
+export type MapPageInfoLazyQueryHookResult = ReturnType<typeof useMapPageInfoLazyQuery>;
+export type MapPageInfoQueryResult = Apollo.QueryResult<MapPageInfoQuery, MapPageInfoQueryVariables>;
 export const UserInfoDocument = gql`
     query userInfo {
   user {
     id
     level
     group
+    avatarUrl
   }
 }
     `;

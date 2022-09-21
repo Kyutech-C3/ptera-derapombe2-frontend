@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import { auth, provider } from '../firebase'
 import { FcGoogle } from 'react-icons/fc'
 import { useUserInfoQuery } from '../graphql/generated'
-import { displayName } from '../variables'
+import { avatarUrl, displayName } from '../variables'
 
 const Container = styled.div`
   height: 100vh;
@@ -67,6 +67,8 @@ function Login() {
         setCookie('accessToken', token)
         userCredential.user.displayName !== null &&
           displayName(userCredential.user.displayName)
+        userCredential.user.photoURL !== null &&
+          avatarUrl(userCredential.user.photoURL)
       })
       .catch((error) => {
         console.error(error)

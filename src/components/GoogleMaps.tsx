@@ -1,7 +1,7 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { CSSProperties, memo, useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { Color } from '../graphql/generated'
+import { Color, MapPageInfoQuery } from '../graphql/generated'
 import MapActionButton from './MapActionButton'
 
 type Markers = {
@@ -67,11 +67,12 @@ const Blur = styled.div`
 `
 
 type GoogleMaps = {
+  data: MapPageInfoQuery
   showSignDetail: () => void
 }
 
 function GoogleMaps(props: GoogleMaps) {
-  const { showSignDetail } = props
+  const { data, showSignDetail } = props
   const [map, setMap] = useState<google.maps.Map | null>(null)
   const [zoomValue, setZoomValue] = useState<number>(19)
   const [showAction, setShowAction] = useState(false)

@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { Color, useAddUserMutation } from '../graphql/generated'
-import { displayName } from '../variables'
+import { avatarUrl, displayName } from '../variables'
 
 const Container = styled.div`
   width: 100vw;
@@ -82,12 +82,14 @@ function TeamSelect() {
   const [addUser] = useAddUserMutation()
   const onClickDecisionButton = () => {
     const name = displayName()
+    const url = avatarUrl()
 
     if (selectedTeam !== null) {
       addUser({
         variables: {
           name: name,
           group: selectedTeam,
+          avatarUrl: url,
         },
         context: {
           headers: {

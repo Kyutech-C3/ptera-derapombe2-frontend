@@ -1,12 +1,17 @@
 import { gql } from '@apollo/client'
 
 export default gql`
-  query userInfo {
+  query MapPageInfo {
     user {
-      id
+      name
       level
+      expPoint
       group
       avatarUrl
+    }
+    powerRatio {
+      green
+      red
     }
   }
 `

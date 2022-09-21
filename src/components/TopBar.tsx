@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Color } from '../graphql/generated'
+import { Color, MapPageInfoQuery } from '../graphql/generated'
 
 const Container = styled.div<{ color: Color }>`
   position: absolute;
@@ -53,7 +53,7 @@ const RatioProgressBar = styled.div`
 `
 
 const RatioProgressRedDegree = styled.div<{ ratio: number }>`
-  width: ${(props) => `${100 * props.ratio}%`};
+  width: ${(props) => `${props.ratio}%`};
   height: 10px;
   border-radius: 3px 0 0 3px;
   background-color: #ff0000;
@@ -70,27 +70,33 @@ const ExpProgressDegree = styled.div<{ ratio: number }>`
   background-color: #3a4eff;
 `
 
-function TopBar() {
+type TopBar = {
+  data: MapPageInfoQuery
+}
+
+function TopBar(props: TopBar) {
+  const { data } = props
+
   return (
-    <Container color={Color.Green}>
+    <Container color={data.user.group}>
       <MainContents>
         <Contents>
-          <CircleAvatar src="https://one-piece.com/assets/images/anime/character/data/Shanks/face.jpg" />
+          <CircleAvatar src={data.user.avatarUrl} />
           <UserInfo>
-            <Text>シャンクス</Text>
-            <Text>Lv. 99</Text>
+            <Text>{data.user.name}</Text>
+            <Text>Lv. {data.user.level}</Text>
           </UserInfo>
         </Contents>
         <Contents>
           <img src="../assets/images/icon-kitsune.png" height="30" />
           <RatioProgressBar>
-            <RatioProgressRedDegree ratio={0.25} />
+            <RatioProgressRedDegree ratio={data.powerRatio.red} />
           </RatioProgressBar>
           <img src="../assets/images/icon-tanuki.png" height="30" />
         </Contents>
       </MainContents>
       <ExpProgressBar>
-        <ExpProgressDegree ratio={0.35} />
+        <ExpProgressDegree ratio={0.24} />
       </ExpProgressBar>
     </Container>
   )
