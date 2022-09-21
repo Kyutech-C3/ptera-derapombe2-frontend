@@ -5,13 +5,13 @@ import { BsBoxSeam } from 'react-icons/bs'
 import { BiLibrary } from 'react-icons/bi'
 import HomeBtn from '../components/HomeBtn'
 
-const Container = styled.div<{ color: Color }>`
+const Container = styled.div<{
+  color: Color
+  redImagePath: string
+  greenImagePath: string
+}>`
   background-image: ${(props) => `url(
-    ${
-      props.color == Color.Red
-        ? '../assets/images/bg-red.png'
-        : '../assets/images/bg-green.png'
-    })`};
+    ${props.color == Color.Red ? props.redImagePath : props.greenImagePath})`};
   position: relative;
   color: black;
   display: grid;
@@ -174,49 +174,49 @@ const ItemExDetail = styled.div`
 
 const itemExplanation = [
   {
-    icon: '../assets/images/endurance-1.png',
+    icon: '/images/endurance-1.png',
     name: '攻撃体制Ⅰ',
     detail: '当チームのランドマークの攻撃耐性アップ(小)',
     cnt: '3',
   },
   {
-    icon: '../assets/images/endurance-2.png',
+    icon: '/images/endurance-2.png',
     name: '攻撃耐性Ⅱ',
     detail: '当チームのランドマークの攻撃耐性アップ(中)',
     cnt: '1',
   },
   {
-    icon: '../assets/images/endurance-3.png',
+    icon: '/images/endurance-3.png',
     name: '攻撃耐性Ⅲ',
     detail: '当チームのランドマークの攻撃耐性アップ(高)',
     cnt: '3',
   },
   {
-    icon: '../assets/images/attack-1.png',
+    icon: '/images/attack-1.png',
     name: '攻撃力上昇Ⅰ',
     detail: '攻撃力アップ(小)',
     cnt: '6',
   },
   {
-    icon: '../assets/images/attack-2.png',
+    icon: '/images/attack-2.png',
     name: '攻撃力上昇Ⅱ',
     detail: '攻撃力アップ(中)',
     cnt: '1',
   },
   {
-    icon: '../assets/images/attack-3.png',
+    icon: '/images/attack-3.png',
     name: '攻撃力上昇Ⅲ',
     detail: '攻撃力アップ(高)',
     cnt: '1',
   },
   {
-    icon: '../assets/images/attack-sign-2.png',
+    icon: '/images/attack-sign-2.png',
     name: '攻撃Ⅱ',
     detail: '敵チームのランドマークに攻撃(中)',
     cnt: '2',
   },
   {
-    icon: '../assets/images/attack-sign-3.png',
+    icon: '/images/attack-sign-3.png',
     name: '攻撃Ⅲ',
     detail: '敵チームのランドマークに攻撃(高)',
     cnt: '1',
@@ -224,49 +224,49 @@ const itemExplanation = [
 ]
 const colloects = [
   {
-    icon: '../assets/images/endurance-1.png',
+    icon: '/images/endurance-1.png',
     name: '攻撃体制Ⅰ',
     detail: '当チームのランドマークの攻撃耐性アップ(小)',
     cnt: '3',
   },
   {
-    icon: '../assets/images/endurance-2.png',
+    icon: '/images/endurance-2.png',
     name: '攻撃耐性Ⅱ',
     detail: '当チームのランドマークの攻撃耐性アップ(中)',
     cnt: '1',
   },
   {
-    icon: '../assets/images/endurance-3.png',
+    icon: '/images/endurance-3.png',
     name: '攻撃耐性Ⅲ',
     detail: '当チームのランドマークの攻撃耐性アップ(高)',
     cnt: '3',
   },
   {
-    icon: '../assets/images/attack-1.png',
+    icon: '/images/attack-1.png',
     name: '攻撃力上昇Ⅰ',
     detail: '攻撃力アップ(小)',
     cnt: '6',
   },
   {
-    icon: '../assets/images/attack-2.png',
+    icon: '/images/attack-2.png',
     name: '攻撃力上昇Ⅱ',
     detail: '攻撃力アップ(中)',
     cnt: '1',
   },
   {
-    icon: '../assets/images/attack-3.png',
+    icon: '/images/attack-3.png',
     name: '攻撃力上昇Ⅲ',
     detail: '攻撃力アップ(高)',
     cnt: '1',
   },
   {
-    icon: '../assets/images/attack-sign-2.png',
+    icon: '/images/attack-sign-2.png',
     name: '攻撃Ⅱ',
     detail: '敵チームのランドマークに攻撃(中)',
     cnt: '2',
   },
   {
-    icon: '../assets/images/attack-sign-3.png',
+    icon: '/images/attack-sign-3.png',
     name: '攻撃Ⅲ',
     detail: '敵チームのランドマークに攻撃(高)',
     cnt: '1',
@@ -281,7 +281,11 @@ function Inventory() {
   const [itemDetail, setItemDetail] = useState('')
 
   return (
-    <Container color={Color.Green}>
+    <Container
+      color={Color.Green}
+      redImagePath="/images/bg-red.png"
+      greenImagePath="/images/bg-green.png"
+    >
       {inventoryBtn ? (
         <>
           <Head>アイテム</Head>

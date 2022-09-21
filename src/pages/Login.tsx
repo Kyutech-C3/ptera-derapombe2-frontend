@@ -12,12 +12,12 @@ import { FcGoogle } from 'react-icons/fc'
 import { useUserInfoQuery } from '../graphql/generated'
 import { avatarUrl, displayName } from '../variables'
 
-const Container = styled.div`
+const Container = styled.div<{ imagePath: string }>`
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url('../assets/images/bg-login.png');
+  background-image: ${(props) => `url(${props.imagePath})`};
   background-position: center;
   background-size: cover;
   background-color: #eaffe7;
@@ -82,8 +82,8 @@ function Login() {
   }, [cookies.accessToken, result])
 
   return (
-    <Container>
-      <Icon src="../assets/images/icon-login.png" alt="icon-login" />
+    <Container imagePath="/images/bg-login.png">
+      <Icon src="/images/icon-login.png" alt="icon-login" />
       <LoginButton onClick={handleLogin}>
         <FcGoogle size="25" />
         <Text>Googleでログイン</Text>

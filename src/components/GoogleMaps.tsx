@@ -89,7 +89,7 @@ function GoogleMaps(props: GoogleMaps) {
         icon:
           placedMarker.icon == Color.Red
             ? {
-                url: '../assets/images/pin-red.png',
+                url: '/images/pin-red.png',
                 scaledSize: new google.maps.Size(
                   zoomValue * markerSizeConstant,
                   zoomValue * markerSizeConstant
@@ -100,7 +100,7 @@ function GoogleMaps(props: GoogleMaps) {
                 ),
               }
             : {
-                url: '../assets/images/pin-green.png',
+                url: '/images/pin-green.png',
                 scaledSize: new google.maps.Size(
                   zoomValue * markerSizeConstant,
                   zoomValue * markerSizeConstant
