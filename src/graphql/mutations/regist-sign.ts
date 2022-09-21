@@ -3,15 +3,13 @@ import { gql } from '@apollo/client'
 export default gql`
   mutation registSign(
     $baseSignTypes: [Int!]!
-    $longitude: Float!
-    $latitude: Float!
     $imagePath: String!
+    $coordinate: CoordinateInput!
   ) {
     registSign(
       registSignInput: {
         baseSignTypes: $baseSignTypes
-        longitude: $longitude
-        latitude: $latitude
+        coordinate: $coordinate
         imagePath: $imagePath
       }
     ) {
@@ -20,7 +18,11 @@ export default gql`
         longitude
       }
       id
-      baseSignTypes
+      baseSigns {
+        id
+        name
+        type
+      }
     }
   }
 `

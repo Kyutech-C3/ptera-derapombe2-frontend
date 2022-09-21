@@ -117,8 +117,10 @@ function CameraResult(props: CameraResult) {
             registSign({
               variables: {
                 baseSignTypes: signTypes,
-                longitude: predictResult.longitude,
-                latitude: predictResult.latitude,
+                coordinate: {
+                  latitude: predictResult.latitude,
+                  longitude: predictResult.longitude,
+                },
                 imagePath: predictResult.url,
               },
               context: {
