@@ -111,9 +111,10 @@ const Items = styled.button`
 
 /*** アイテムの詳細表示関連 ***/
 const ItemExWin = styled.div`
+  position: absolute;
   display: flex;
   margin: 0;
-  margin-top: -50vh;
+  margin-top: 10vh;
   width: 100%;
   height: 30vh;
   color: white;
@@ -199,22 +200,47 @@ const itemExplanation = [
   },
 ]
 const colloects = [
-  '../assets/images/endurance-1.png',
-  '../assets/images/endurance-2.png',
-  '../assets/images/endurance-3.png',
-  '../assets/images/attack-1.png',
-  '../assets/images/attack-2.png',
-  '../assets/images/attack-3.png',
-  '../assets/images/attack-sign-2.png',
-  '../assets/images/attack-sign-3.png',
+  {
+    icon: '../assets/images/endurance-1.png',
+    name: '攻撃体制Ⅰ',
+    detail: '当チームのランドマークの攻撃耐性アップ(小)',
+  },
+  {
+    icon: '../assets/images/endurance-2.png',
+    name: '攻撃耐性Ⅱ',
+    detail: '当チームのランドマークの攻撃耐性アップ(中)',
+  },
+  {
+    icon: '../assets/images/endurance-3.png',
+    name: '攻撃耐性Ⅲ',
+    detail: '当チームのランドマークの攻撃耐性アップ(高)',
+  },
+  {
+    icon: '../assets/images/attack-1.png',
+    name: '攻撃力上昇Ⅰ',
+    detail: '攻撃力アップ(小)',
+  },
+  {
+    icon: '../assets/images/attack-2.png',
+    name: '攻撃力上昇Ⅱ',
+    detail: '攻撃力アップ(中)',
+  },
+  {
+    icon: '../assets/images/attack-3.png',
+    name: '攻撃力上昇Ⅲ',
+    detail: '攻撃力アップ(高)',
+  },
+  {
+    icon: '../assets/images/attack-sign-2.png',
+    name: '攻撃Ⅱ',
+    detail: '敵チームのランドマークに攻撃(中)',
+  },
+  {
+    icon: '../assets/images/attack-sign-3.png',
+    name: '攻撃Ⅲ',
+    detail: '敵チームのランドマークに攻撃(高)',
+  },
 ]
-// const items = [
-//   {
-//     icon: '../assets/images/attack-1.png',
-//     name: 'Name',
-//     detail: 'apoiargavfnakuhjeujnrfdxcf',
-//   },
-// ]
 
 function Inventory() {
   const [inventoryBtn, setInventoryBtn] = useState(true)
@@ -255,8 +281,16 @@ function Inventory() {
             <SetContents>
               {colloects.map((item, i) => {
                 return (
-                  <Items onClick={() => setVisible(false)} key={i}>
-                    <img src={item} width="70px"></img>
+                  <Items
+                    onClick={() => {
+                      setVisible(false)
+                      setItemIcon(item.icon)
+                      setItemName(item.name)
+                      setItemDetail(item.detail)
+                    }}
+                    key={i}
+                  >
+                    <img src={item.icon} width="70px"></img>
                   </Items>
                 )
               })}
