@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { GoSync } from 'react-icons/go'
+import { useRegistSignMutation } from '../graphql/generated'
+import { useCookies } from 'react-cookie'
 
 const ResultImage = styled.img`
   width: 100vw;
@@ -47,47 +49,94 @@ const ActionButton = styled.button`
 `
 
 type CameraResult = {
-  imageSource: string
+  predictResult: {
+    scores: {
+      score: number
+      signType: number
+      signName: string
+    }[][]
+    url: string
+    latitude: number
+    longitude: number
+  }
   onClickRecapture: () => void
 }
 
 function CameraResult(props: CameraResult) {
-  const { imageSource, onClickRecapture } = props
+  // const [scoreIndex, setScoreIndex] = useState<number[]>([])
+  const [cookies] = useCookies<
+    'accessToken',
+    {
+      accessToken?: string
+    }
+  >(['accessToken'])
+  const { predictResult, onClickRecapture } = props
   const navigate = useNavigate()
+  const [registSign] = useRegistSignMutation()
 
   return (
     <>
-      <ResultImage src={imageSource} alt="result-image" />
+      <ResultImage src={predictResult.url} alt="result-image" />
       <Title>判定結果</Title>
       <ResultContainer>
-        <ResultContent>
-          <ResultSignDetail>
-            <img
-              src="https://freesozai.jp/sozai/roadsign/rds_020.svg"
-              width="50"
-            />
-            <ResultSignDetailText>名前</ResultSignDetailText>
-          </ResultSignDetail>
-          <div>
-            <GoSync color="white" size={30} />
-          </div>
-        </ResultContent>
-        <ResultContent>
-          <ResultSignDetail>
-            <img
-              src="https://freesozai.jp/sozai/roadsign/rds_020.svg"
-              width="50"
-            />
-            <ResultSignDetailText>名前</ResultSignDetailText>
-          </ResultSignDetail>
-          <div>
-            <GoSync color="white" size={30} />
-          </div>
-        </ResultContent>
+        {predictResult.scores.map((score, index) => (
+          <ResultContent key={index}>
+            <ResultSignDetail>
+              <img
+                src={`https://sign-gress-server.azurewebsites.net/static/${(
+                  '0' + score[index].signType
+                ).slice(-2)}rds_0${('0' + score[index].signType).slice(
+                  -2
+                )}_r.png`}
+                width="50"
+              />
+              <ResultSignDetailText>
+                {score[index].signName}
+              </ResultSignDetailText>
+            </ResultSignDetail>
+            {/* <div
+              onClick={() => {
+                scoreIndex[index]++
+                setScoreIndex(scoreIndex)
+              }}
+            >
+              <GoSync color="white" size={30} />
+            </div> */}
+          </ResultContent>
+        ))}
       </ResultContainer>
       <ActionButtonContainer>
         <ActionButton onClick={onClickRecapture}>再撮影</ActionButton>
-        <ActionButton onClick={() => navigate('/map')}>確定</ActionButton>
+        <ActionButton
+          onClick={() => {
+            console.log(cookies)
+            let signTypes: number[] = []
+            predictResult.scores.map((score) => {
+              signTypes.push(score[0].signType)
+            })
+            registSign({
+              variables: {
+                baseSignTypes: signTypes,
+                longitude: predictResult.longitude,
+                latitude: predictResult.latitude,
+                imagePath: predictResult.url,
+              },
+              context: {
+                headers: {
+                  Authorization: `Bearer ${cookies.accessToken ?? ''}`,
+                },
+              },
+              onError: (error) => {
+                console.error(error)
+              },
+            }).then((value) => {
+              console.log(value.data?.registSign)
+              navigate('/map')
+            })
+          }}
+        >
+          確定
+        </ActionButton>
       </ActionButtonContainer>
     </>
   )
