@@ -49,7 +49,7 @@ function Login() {
       },
     },
     onError: (error) => {
-      console.error(error)
+      if (error.message === 'user is not found') navigate('/team-select')
     },
   })
 
@@ -67,12 +67,8 @@ function Login() {
   }
 
   useEffect(() => {
-    if (cookies.accessToken !== undefined) {
-      if (result.data === undefined) {
-        navigate('/team-select')
-      } else {
-        navigate('/map')
-      }
+    if (cookies.accessToken !== undefined && result.data !== undefined) {
+      navigate('/map')
     }
   }, [cookies.accessToken, result])
 
