@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import reactLogo from '../assets/react.svg'
 import styled, { keyframes } from 'styled-components'
 
 import { FaGithub } from 'react-icons/fa'
@@ -54,7 +53,7 @@ function App() {
           <Logo src="/vite.svg" alt="Vite logo" />
         </a>
         <a href="https://reactjs.org" target="_blank" rel="noreferrer">
-          <ReactLogo src={reactLogo} alt="React logo" />
+          <ReactLogo src="/react.svg" alt="React logo" />
         </a>
       </div>
       <h1>Vite + React</h1>

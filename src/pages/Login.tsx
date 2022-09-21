@@ -11,15 +11,13 @@ import { auth, provider } from '../firebase'
 import { FcGoogle } from 'react-icons/fc'
 import { useUserInfoQuery } from '../graphql/generated'
 import { avatarUrl, displayName } from '../variables'
-import BgLoginImage from '../assets/images/bg-login.png'
-import IconLoginImage from '../assets/images/icon-login.png'
 
-const Container = styled.div`
+const Container = styled.div<{ imagePath: string }>`
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: ${`url(${BgLoginImage})`};
+  background-image: ${(props) => `url(${props.imagePath})`};
   background-position: center;
   background-size: cover;
   background-color: #eaffe7;
@@ -84,8 +82,8 @@ function Login() {
   }, [cookies.accessToken, result])
 
   return (
-    <Container>
-      <Icon src={IconLoginImage} alt="icon-login" />
+    <Container imagePath="/images/bg-login.png">
+      <Icon src="/images/icon-login.png" alt="icon-login" />
       <LoginButton onClick={handleLogin}>
         <FcGoogle size="25" />
         <Text>Googleでログイン</Text>

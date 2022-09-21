@@ -4,18 +4,14 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { Color, useAddUserMutation } from '../graphql/generated'
 import { avatarUrl, displayName } from '../variables'
-import BgLoginImage from '../assets/images/bg-login.png'
-import LogoMarkImage from '../assets/images/logo-mark.png'
-import PinGreenImage from '../assets/images/pin-green.png'
-import PinRedImage from '../assets/images/pin-red.png'
 
-const Container = styled.div`
+const Container = styled.div<{ imagePath: string }>`
   width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: ${`url(${BgLoginImage})`};
+  background-image: ${(props) => `url(${props.imagePath})`};
   background-position: center;
   background-size: cover;
 `
@@ -114,8 +110,8 @@ function TeamSelect() {
   }
 
   return (
-    <Container>
-      <LogoMark src={LogoMarkImage} alt="logo-mark" />
+    <Container imagePath="/images/bg-login.png">
+      <LogoMark src="/images/logo-mark.png" alt="logo-mark" />
       <TeamSelectAnnounceText>
         所属するチームを選んでください
       </TeamSelectAnnounceText>
@@ -127,7 +123,7 @@ function TeamSelect() {
             selectedTeam={selectedTeam}
             onClick={() => setSelectedTeam(Color.Green)}
           >
-            <img src={PinGreenImage} alt="pin-green" width="100%" />
+            <img src="/images/pin-green.png" alt="pin-green" width="100%" />
           </TeamSelectButton>
         </TeamSelectButtonContent>
         <TeamSelectButtonContent>
@@ -137,7 +133,7 @@ function TeamSelect() {
             selectedTeam={selectedTeam}
             onClick={() => setSelectedTeam(Color.Red)}
           >
-            <img src={PinRedImage} alt="pin-red" width="100%" />
+            <img src="/images/pin-red.png" alt="pin-red" width="100%" />
           </TeamSelectButton>
         </TeamSelectButtonContent>
       </TeamSelectButtonContainer>

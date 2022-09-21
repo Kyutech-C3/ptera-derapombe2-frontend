@@ -1,7 +1,5 @@
 import styled from 'styled-components'
 import { Color } from '../graphql/generated'
-import Attack1Image from '../assets/images/attack-1.png'
-import PinGreenImage from '../assets/images/pin-green.png'
 
 const Container = styled.div<{ color: Color }>`
   width: 100vw;
@@ -123,13 +121,13 @@ const ResistanceItemContent = styled.div`
   margin-bottom: 10px;
 `
 
-const ResistanceItem = styled.div`
+const ResistanceItem = styled.div<{ imagePath: string }>`
   margin: auto;
   width: 60px;
   height: 60px;
   border: 1px dotted;
   border-radius: 5px;
-  background-image: ${`url(${Attack1Image})`};
+  background-image: ${(props) => `url(${props.imagePath})`};
   background-size: cover;
 `
 
@@ -163,7 +161,7 @@ function SignDetail(props: SignDetail) {
             />
           </div>
         </PhotoImageDetail>
-        <ColorIcon src={PinGreenImage} alt="icon-kitsune" />
+        <ColorIcon src="/images/pin-green.png" alt="icon-kitsune" />
       </PhotoImage>
       <SignInfoContainer>
         <SignInfo>
@@ -193,27 +191,27 @@ function SignDetail(props: SignDetail) {
         </ProgressBar>
         <ResistanceItems>
           <ResistanceItemContent>
-            <ResistanceItem />
+            <ResistanceItem imagePath="/images/attack-1.png" />
             <span>攻撃耐性 +50</span>
           </ResistanceItemContent>
           <ResistanceItemContent>
-            <ResistanceItem />
+            <ResistanceItem imagePath="/images/attack-1.png" />
             <span>攻撃耐性 +50</span>
           </ResistanceItemContent>
           <ResistanceItemContent>
-            <ResistanceItem />
+            <ResistanceItem imagePath="/images/attack-1.png" />
             <span>攻撃耐性 +50</span>
           </ResistanceItemContent>
           <ResistanceItemContent>
-            <ResistanceItem />
+            <ResistanceItem imagePath="/images/attack-1.png" />
             <span>攻撃耐性 +50</span>
           </ResistanceItemContent>
           <ResistanceItemContent>
-            <ResistanceItem />
+            <ResistanceItem imagePath="/images/attack-1.png" />
             <span>攻撃耐性 +50</span>
           </ResistanceItemContent>
           <ResistanceItemContent>
-            <ResistanceItem />
+            <ResistanceItem imagePath="/images/attack-1.png" />
             <span>攻撃耐性 +50</span>
           </ResistanceItemContent>
         </ResistanceItems>

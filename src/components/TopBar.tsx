@@ -1,7 +1,5 @@
 import styled from 'styled-components'
 import { Color, MapPageInfoQuery } from '../graphql/generated'
-import IconKitsuneImage from '../assets/images/icon-kitsune.png'
-import IconTanukiImage from '../assets/images/icon-tanuki.png'
 
 const Container = styled.div<{ color: Color }>`
   position: absolute;
@@ -90,11 +88,11 @@ function TopBar(props: TopBar) {
           </UserInfo>
         </Contents>
         <Contents>
-          <img src={IconKitsuneImage} height="30" />
+          <img src="/images/icon-kitsune.png" height="30" />
           <RatioProgressBar>
             <RatioProgressRedDegree ratio={data.powerRatio.red} />
           </RatioProgressBar>
-          <img src={IconTanukiImage} height="30" />
+          <img src="/images/icon-tanuki.png" height="30" />
         </Contents>
       </MainContents>
       <ExpProgressBar>
