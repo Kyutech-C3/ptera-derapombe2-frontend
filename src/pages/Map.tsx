@@ -4,6 +4,7 @@ import BottomNavigationBar from '../components/BottomNavigationBar'
 import GoogleMaps from '../components/GoogleMaps'
 import SignDetail from '../components/SignDetail'
 import TopBar from '../components/TopBar'
+import HomeBtn from '../components/HomeBtn'
 import { useMapPageInfoQuery } from '../graphql/generated'
 
 function Map() {
@@ -36,6 +37,7 @@ function Map() {
               data={mapPageInfo.data}
               showSignDetail={() => setDisplaySignDetail(true)}
             />
+            <HomeBtn />
             <TopBar data={mapPageInfo.data} />
           </>
         )}
