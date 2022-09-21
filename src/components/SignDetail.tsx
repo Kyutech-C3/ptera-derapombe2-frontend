@@ -161,7 +161,7 @@ function SignDetail(props: SignDetail) {
             />
           </div>
         </PhotoImageDetail>
-        <ColorIcon src="/images/pin-green.png" alt="icon-kitsune" />
+        <ColorIcon src="/images/icon-kitsune.png" alt="icon-kitsune" />
       </PhotoImage>
       <SignInfoContainer>
         <SignInfo>
