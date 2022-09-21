@@ -1,9 +1,9 @@
+import { useState } from 'react'
+import { Color } from '../graphql/generated'
 import styled from 'styled-components'
 import { BsBoxSeam } from 'react-icons/bs'
 import { BiLibrary } from 'react-icons/bi'
-import { AiOutlineHome } from 'react-icons/ai'
-import { useState } from 'react'
-import { Color } from '../graphql/generated'
+import HomeBtn from '../components/HomeBtn'
 
 const Container = styled.div<{ color: Color }>`
   background-image: ${(props) => `url(
@@ -12,6 +12,7 @@ const Container = styled.div<{ color: Color }>`
         ? '../assets/images/bg-red.png'
         : '../assets/images/bg-green.png'
     })`};
+  position: relative;
   color: black;
   display: grid;
   width: 100vw;
@@ -21,44 +22,40 @@ const Container = styled.div<{ color: Color }>`
 `
 /*** ヘッダー ***/
 const Head = styled.h2`
+  margin: 0;
+  padding: 2vh 0;
   width: 100%;
-  margin: 0 auto;
-  max-height: 10px;
-  padding: 10px 0;
+  height: 6vh;
   text-align: center;
+  transform: translateY(calc(100% / 6));
 `
 /*** フッター ***/
 const Foot = styled.footer`
   margin: 0;
+  padding: 0;
   display: flex;
   width: 100vw;
-  min-height: 50px;
+  height: 100%;
 `
 
 /*** ボタン ***/
 const Btn = styled.button`
+  margin: 0;
   border-radius: 0;
   text-align: center;
 `
-const SetHome = styled(AiOutlineHome)`
-  display: flex;
-  margin: auto;
-  margin-top: -10px;
-  margin-bottom: -25px;
-  padding: 10px;
-  width: 50px;
-  height: 50px;
-  background-color: white;
-  border-radius: 100%;
-  z-index: 2;
-`
 const SetBtn = styled(Btn)`
   display: flex;
-  /* margin: -10px 0 0; */
+  flex-direction: column;
+  margin: 0;
   width: 100vw;
-  height: 50px;
+  height: 100%;
   align-items: center;
   justify-content: space-around;
+`
+const Text = styled.span`
+  font-size: 11px;
+  color: black;
 `
 const CloseBtn = styled.button`
   width: 20vw;
@@ -71,10 +68,11 @@ const CloseBtn = styled.button`
 
 /*** アイテム表示場所 ***/
 const SubBack = styled.article<{ color: Color }>`
-  margin: 20px auto;
+  margin: 10vh auto;
+  margin-top: 0;
   padding: 20px 0px;
   width: 80%;
-  height: 70vh;
+  height: 60vh;
   background-color: rgb(255, 255, 255, 0.8);
   border: 3px solid;
   border-color: ${(props) =>
@@ -174,8 +172,6 @@ const itemExplanation = [
     name: 'Name',
     detail: 'apoiargavfnakuhjeujnrfdxcf',
   },
-  // { name: 'Name' },
-  // { detail: 'Detail' },
 ]
 
 function Inventory() {
@@ -183,11 +179,11 @@ function Inventory() {
   const [visible, setVisible] = useState(true)
 
   return (
-    <Container color={Color.Red}>
+    <Container color={Color.Green}>
       {inventoryBtn ? (
         <>
           <Head>ITEM</Head>
-          <SubBack color={Color.Red}>
+          <SubBack color={Color.Green}>
             <SetContents>
               {items.map((item, i) => {
                 return (
@@ -207,7 +203,7 @@ function Inventory() {
       ) : (
         <>
           <Head>COLLECTION</Head>
-          <SubBack color={Color.Red}>
+          <SubBack color={Color.Green}>
             <SetContents>
               {colloects.map((item, i) => {
                 return (
@@ -243,9 +239,7 @@ function Inventory() {
           <CloseBtn onClick={() => setVisible(true)}>close</CloseBtn>
         </ItemExWin>
       )}
-      <SetHome href="/map">
-        <AiOutlineHome color="black" />
-      </SetHome>
+      <HomeBtn />
       <Foot>
         <ItemBox
           onClick={() => {
@@ -254,7 +248,8 @@ function Inventory() {
           }}
           isAction={inventoryBtn}
         >
-          <BsBoxSeam color="black" size="40" />
+          <BsBoxSeam color="black" size="30" />
+          <Text>アイテム</Text>
         </ItemBox>
         <CollectBox
           onClick={() => {
@@ -263,7 +258,8 @@ function Inventory() {
           }}
           isAction={inventoryBtn}
         >
-          <BiLibrary color="black" size="40" />
+          <BiLibrary color="black" size="30" />
+          <Text>コレクション</Text>
         </CollectBox>
       </Foot>
     </Container>
