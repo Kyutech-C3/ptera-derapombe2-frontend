@@ -1,7 +1,7 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { CSSProperties, memo, useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { Color } from '../graphql/generated'
+import { Color, MapPageInfoQuery } from '../graphql/generated'
 import MapActionButton from './MapActionButton'
 
 type Markers = {
@@ -66,7 +66,13 @@ const Blur = styled.div`
   box-shadow: inset 0px -25px 20px 5px rgb(0 0 0 / 57%);
 `
 
-function GoogleMaps() {
+type GoogleMaps = {
+  data: MapPageInfoQuery
+  showSignDetail: () => void
+}
+
+function GoogleMaps(props: GoogleMaps) {
+  const { data, showSignDetail } = props
   const [map, setMap] = useState<google.maps.Map | null>(null)
   const [zoomValue, setZoomValue] = useState<number>(19)
   const [showAction, setShowAction] = useState(false)
@@ -176,7 +182,10 @@ function GoogleMaps() {
       {showAction ? (
         <>
           <Blur />
-          <MapActionButton onClickCloseButton={() => setShowAction(false)} />
+          <MapActionButton
+            onClickCloseButton={() => setShowAction(false)}
+            onClickSignDetailButton={() => showSignDetail()}
+          />
         </>
       ) : (
         <></>

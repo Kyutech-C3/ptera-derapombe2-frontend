@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Color } from '../graphql/generated'
 
-const Container = styled.div<{ color: Color }>`
+const Container = styled.div<{ color: Color; showSignDetail: boolean }>`
+  background-color: ${(props) => props.showSignDetail && 'white !important'};
   background-color: ${(props) =>
     props.color == Color.Red ? '#ffe7e7' : '#eaffe7'};
   width: 100vw;
@@ -25,9 +26,16 @@ const Text = styled.span`
   color: black;
 `
 
-function BottomNavigationBar() {
+type BottomNavigationBar = {
+  groupColor: Color
+  displaySignDetail: boolean
+}
+
+function BottomNavigationBar(props: BottomNavigationBar) {
+  const { groupColor, displaySignDetail } = props
+
   return (
-    <Container color={Color.Green}>
+    <Container color={groupColor} showSignDetail={displaySignDetail}>
       <IconText to="/inventory">
         <BsHandbag color="black" size="30" />
         <Text>インベントリ</Text>

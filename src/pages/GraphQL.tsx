@@ -1,22 +1,23 @@
-import { Color, useMeQuery, useUserAddMutation } from '../graphql/generated'
+import {
+  Color,
+  useAddUserMutation,
+  useUserInfoQuery,
+} from '../graphql/generated'
 
 function GraphQL() {
-  const data = useMeQuery()
-  console.log(data)
-  const [userAdd] = useUserAddMutation()
+  const userInfo = useUserInfoQuery
+  console.log(userInfo)
+  const [addUser] = useAddUserMutation()
 
   return (
     <>
       <p>see console</p>
       <button
         onClick={() => {
-          void userAdd({
+          void addUser({
             variables: {
-              params: {
-                name: 'hogehoge',
-                group: Color.Green,
-                avatarNumber: 1,
-              },
+              name: 'hogehoge',
+              group: Color.Green,
             },
           })
             .then((value) => console.log(value))

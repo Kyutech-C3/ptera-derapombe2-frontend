@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 // eslint-disable-next-line import/no-unresolved
 import { registerSW } from 'virtual:pwa-register'
+import { CookiesProvider } from 'react-cookie'
 import {
   ApolloClient,
   InMemoryCache,
@@ -17,12 +18,13 @@ import Camera from './pages/Camera'
 import Inventory from './pages/Inventory'
 import Login from './pages/Login'
 import GraphQL from './pages/GraphQL'
+import TeamSelect from './pages/TeamSelect'
 
 const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-  },
+  // {
+  //   path: '/',
+  //   element: <App />,
+  // },
   {
     path: '/map',
     element: <Map />,
@@ -36,21 +38,21 @@ const router = createBrowserRouter([
     element: <Inventory />,
   },
   {
-    path: '/login',
+    path: '/',
     element: <Login />,
   },
   {
     path: '/graphql',
     element: <GraphQL />,
   },
+  {
+    path: '/team-select',
+    element: <TeamSelect />,
+  },
 ])
 
-const firebaseAccessToken = ''
 const link = createHttpLink({
   uri: import.meta.env.VITE_ENV_GRAPHQL_URL,
-  headers: {
-    Authorization: `Bearer ${firebaseAccessToken}`,
-  },
 })
 
 const client = new ApolloClient({
@@ -60,9 +62,11 @@ const client = new ApolloClient({
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <RouterProvider router={router} />
-    </ApolloProvider>
+    <CookiesProvider>
+      <ApolloProvider client={client}>
+        <RouterProvider router={router} />
+      </ApolloProvider>
+    </CookiesProvider>
   </React.StrictMode>
 )
 
