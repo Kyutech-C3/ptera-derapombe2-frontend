@@ -1,4 +1,8 @@
-import { signInWithPopup } from 'firebase/auth'
+import {
+  browserLocalPersistence,
+  setPersistence,
+  signInWithPopup,
+} from 'firebase/auth'
 import { useEffect } from 'react'
 import { useCookies } from 'react-cookie'
 import { useNavigate } from 'react-router-dom'
@@ -56,6 +60,9 @@ function Login() {
   const handleLogin = () => {
     signInWithPopup(auth, provider)
       .then(async (userCredential) => {
+        await setPersistence(auth, browserLocalPersistence).catch((error) =>
+          console.error(error)
+        )
         const token = await userCredential.user.getIdToken()
         setCookie('accessToken', token)
         userCredential.user.displayName !== null &&
