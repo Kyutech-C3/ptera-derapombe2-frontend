@@ -100,12 +100,24 @@ const CollectBox = styled(SetBtn)<{ isAction: boolean }>`
   background: ${(props) => (props.isAction ? 'white' : 'transparent')};
 `
 const Items = styled.button`
+  position: relatve;
   margin: 0;
   padding: 0;
   width: 100%;
   height: 70px;
   background-color: transparent;
   align-items: center;
+  text-align: center;
+`
+const ItemsCount = styled.div`
+  position: absolute;
+  margin: 0;
+  padding: 3px;
+  transform: translate(48px, 40px);
+  width: 25px;
+  height: 25px;
+  background-color: rgb(36, 98, 255, 0.8);
+  border-radius: 100%;
   text-align: center;
 `
 
@@ -162,41 +174,49 @@ const itemExplanation = [
     icon: '../assets/images/endurance-1.png',
     name: '攻撃体制Ⅰ',
     detail: '当チームのランドマークの攻撃耐性アップ(小)',
+    cnt: '3',
   },
   {
     icon: '../assets/images/endurance-2.png',
     name: '攻撃耐性Ⅱ',
     detail: '当チームのランドマークの攻撃耐性アップ(中)',
+    cnt: '1',
   },
   {
     icon: '../assets/images/endurance-3.png',
     name: '攻撃耐性Ⅲ',
     detail: '当チームのランドマークの攻撃耐性アップ(高)',
+    cnt: '3',
   },
   {
     icon: '../assets/images/attack-1.png',
     name: '攻撃力上昇Ⅰ',
     detail: '攻撃力アップ(小)',
+    cnt: '6',
   },
   {
     icon: '../assets/images/attack-2.png',
     name: '攻撃力上昇Ⅱ',
     detail: '攻撃力アップ(中)',
+    cnt: '1',
   },
   {
     icon: '../assets/images/attack-3.png',
     name: '攻撃力上昇Ⅲ',
     detail: '攻撃力アップ(高)',
+    cnt: '1',
   },
   {
     icon: '../assets/images/attack-sign-2.png',
     name: '攻撃Ⅱ',
     detail: '敵チームのランドマークに攻撃(中)',
+    cnt: '2',
   },
   {
     icon: '../assets/images/attack-sign-3.png',
     name: '攻撃Ⅲ',
     detail: '敵チームのランドマークに攻撃(高)',
+    cnt: '1',
   },
 ]
 const colloects = [
@@ -204,41 +224,49 @@ const colloects = [
     icon: '../assets/images/endurance-1.png',
     name: '攻撃体制Ⅰ',
     detail: '当チームのランドマークの攻撃耐性アップ(小)',
+    cnt: '3',
   },
   {
     icon: '../assets/images/endurance-2.png',
     name: '攻撃耐性Ⅱ',
     detail: '当チームのランドマークの攻撃耐性アップ(中)',
+    cnt: '1',
   },
   {
     icon: '../assets/images/endurance-3.png',
     name: '攻撃耐性Ⅲ',
     detail: '当チームのランドマークの攻撃耐性アップ(高)',
+    cnt: '3',
   },
   {
     icon: '../assets/images/attack-1.png',
     name: '攻撃力上昇Ⅰ',
     detail: '攻撃力アップ(小)',
+    cnt: '6',
   },
   {
     icon: '../assets/images/attack-2.png',
     name: '攻撃力上昇Ⅱ',
     detail: '攻撃力アップ(中)',
+    cnt: '1',
   },
   {
     icon: '../assets/images/attack-3.png',
     name: '攻撃力上昇Ⅲ',
     detail: '攻撃力アップ(高)',
+    cnt: '1',
   },
   {
     icon: '../assets/images/attack-sign-2.png',
     name: '攻撃Ⅱ',
     detail: '敵チームのランドマークに攻撃(中)',
+    cnt: '2',
   },
   {
     icon: '../assets/images/attack-sign-3.png',
     name: '攻撃Ⅲ',
     detail: '敵チームのランドマークに攻撃(高)',
+    cnt: '1',
   },
 ]
 
@@ -267,6 +295,7 @@ function Inventory() {
                     }}
                     key={i}
                   >
+                    <ItemsCount>{item.cnt}</ItemsCount>
                     <img src={item.icon} width="70px"></img>
                   </Items>
                 )
@@ -290,6 +319,7 @@ function Inventory() {
                     }}
                     key={i}
                   >
+                    <ItemsCount>{item.cnt}</ItemsCount>
                     <img src={item.icon} width="70px"></img>
                   </Items>
                 )
@@ -314,24 +344,6 @@ function Inventory() {
               <ItemExDetail>{itemDetail}</ItemExDetail>
             </FlexColumn>
           </ItemDetails>
-          {/* {items.map((item, i) => {
-            return (
-              <ItemDetails
-                onClick={() => {
-                  setInventoryBtn(false)
-                }}
-                key={i}
-              >
-                <ItemExIcon>
-                  <img src={itemIcon} width="70"></img>
-                </ItemExIcon>
-                <FlexColumn>
-                  <ItemEx>{item.name}</ItemEx>
-                  <ItemEx>{item.detail}</ItemEx>
-                </FlexColumn>
-              </ItemDetails>
-            )
-          })} */}
           <CloseBtn onClick={() => setVisible(true)}>close</CloseBtn>
         </ItemExWin>
       )}
