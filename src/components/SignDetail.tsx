@@ -161,7 +161,7 @@ function SignDetail(props: SignDetail) {
   useEffect(() => {
     let resistance = 1
     let endurance = 0
-    data.mapInfo.signs[index].items.map((item) => {
+    data.mapInfo.signs[index].items?.map((item) => {
       if (item.effect === ItemEffect.Resistance) {
         resistance *= item.value
       } else {
@@ -173,7 +173,7 @@ function SignDetail(props: SignDetail) {
   }, [])
 
   return (
-    <Container color={targetData.group}>
+    <Container color={targetData.group ?? Color.Red}>
       <PhotoImage imageUrl={targetData.imagePath}>
         <PhotoImageDetail>
           <SignLatLngTextContainer>
@@ -185,16 +185,16 @@ function SignDetail(props: SignDetail) {
             </SignLatLngText>
           </SignLatLngTextContainer>
           <div>
-            {targetData.baseSignTypes.map((baseSignType) => {
-              const convertedBaseSignType: string =
-                String(baseSignType).length !== 1
-                  ? baseSignType.toString()
-                  : `0${baseSignType.toString()}`
+            {targetData.baseSigns.map((baseSign) => {
+              const convertedId: string =
+                String(baseSign.type).length !== 1
+                  ? baseSign.type.toString()
+                  : `0${baseSign.type.toString()}`
               return (
                 <SignImage
-                  src={`https://sign-gress-server.azurewebsites.net/static/${convertedBaseSignType}rds_0${convertedBaseSignType}_r.png`}
-                  alt={`${convertedBaseSignType}rds_0${convertedBaseSignType}_r`}
-                  key={convertedBaseSignType}
+                  src={`https://sign-gress-server.azurewebsites.net/static/${convertedId}rds_0${convertedId}_r.png`}
+                  alt={`${convertedId}rds_0${convertedId}_r`}
+                  key={baseSign.id}
                 />
               )
             })}
@@ -235,15 +235,21 @@ function SignDetail(props: SignDetail) {
           </SignInfoTextContent>
         </SignInfo>
         <ProgressBar>
-          <ProgressDegree
-            ratio={targetData.hitPoint / targetData.maxHitPoint}
-            color={Color.Red}
-          >
-            <span>{(targetData.hitPoint / targetData.maxHitPoint) * 100}%</span>
-          </ProgressDegree>
+          {targetData.hitPoint ? (
+            <ProgressDegree
+              ratio={targetData.hitPoint / targetData.maxHitPoint}
+              color={Color.Red}
+            >
+              <span>
+                {(targetData.hitPoint / targetData.maxHitPoint) * 100}%
+              </span>
+            </ProgressDegree>
+          ) : (
+            <></>
+          )}
         </ProgressBar>
         <ResistanceItems>
-          {targetData.items.map((item) => {
+          {targetData.items?.map((item) => {
             return (
               <ResistanceItemContent key={item.id}>
                 <ResistanceItem
@@ -260,13 +266,17 @@ function SignDetail(props: SignDetail) {
               </ResistanceItemContent>
             )
           })}
-          {[...Array<string>(6 - targetData.items.length)].map((_, i) => {
-            return (
-              <ResistanceItemContent key={i}>
-                <ResistanceItem imagePath={''} />
-              </ResistanceItemContent>
-            )
-          })}
+          {targetData.items ? (
+            [...Array<string>(6 - targetData.items.length)].map((_, i) => {
+              return (
+                <ResistanceItemContent key={i}>
+                  <ResistanceItem imagePath={''} />
+                </ResistanceItemContent>
+              )
+            })
+          ) : (
+            <></>
+          )}
         </ResistanceItems>
       </SignInfoContainer>
     </Container>

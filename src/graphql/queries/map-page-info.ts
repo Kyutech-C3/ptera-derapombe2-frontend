@@ -6,7 +6,6 @@ export default gql`
       signs {
         id
         imagePath
-        baseSignTypes
         group
         maxHitPoint
         hitPoint
@@ -21,6 +20,10 @@ export default gql`
         coordinate {
           latitude
           longitude
+        }
+        baseSigns {
+          id
+          type
         }
       }
       polygons {

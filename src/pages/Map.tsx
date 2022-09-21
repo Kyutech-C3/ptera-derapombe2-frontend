@@ -1,14 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
 import BottomNavigationBar from '../components/BottomNavigationBar'
+import ExhumeNotify from '../components/ExhumeNotify'
 import GoogleMaps from '../components/GoogleMaps'
 import SignDetail from '../components/SignDetail'
 import TopBar from '../components/TopBar'
-import { useMapPageInfoQuery } from '../graphql/generated'
+import {
+  useExhumeSignMutation,
+  useMapPageInfoQuery,
+} from '../graphql/generated'
 
 function Map() {
   const [displaySignDetail, setDisplaySignDetail] = useState(false)
   const [signIndex, setSignIndex] = useState(0)
+  const [showExhumeNotify, setShowExhumeNotify] = useState(false)
   const [cookies] = useCookies<
     'accessToken',
     {
@@ -25,6 +30,21 @@ function Map() {
       console.error(error)
     },
   })
+  const [exhumeSign, { data }] = useExhumeSignMutation({
+    context: {
+      headers: {
+        Authorization: `Bearer ${cookies.accessToken ?? ''}`,
+      },
+    },
+  })
+
+  useEffect(() => {
+    if (showExhumeNotify) {
+      setTimeout(() => {
+        setShowExhumeNotify(false)
+      }, 5000)
+    }
+  }, [showExhumeNotify, data])
 
   return mapPageInfo.data ? (
     <>
@@ -38,11 +58,21 @@ function Map() {
         <>
           <GoogleMaps
             data={mapPageInfo.data}
+            onClickExhumeSign={(index) => {
+              void exhumeSign({
+                variables: {
+                  signId: mapPageInfo.data?.mapInfo.signs[index].id ?? '',
+                },
+              }).then(() => {
+                setShowExhumeNotify(true)
+              })
+            }}
             showSignDetail={(index) => {
               setDisplaySignDetail(true)
               setSignIndex(index)
             }}
           />
+          {showExhumeNotify && data ? <ExhumeNotify data={data} /> : <></>}
           <TopBar data={mapPageInfo.data} />
         </>
       )}

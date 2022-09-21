@@ -48,17 +48,21 @@ const DetailButton = styled(ActionButton)`
 
 type MapActionButton = {
   onClickCloseButton: () => void
+  onClickExhumeSign: () => void
   onClickSignDetailButton: () => void
 }
 
 function MapActionButton(props: MapActionButton) {
-  const { onClickCloseButton, onClickSignDetailButton } = props
+  const { onClickCloseButton, onClickExhumeSign, onClickSignDetailButton } =
+    props
 
   return (
     <>
       <CloseButton onClick={onClickCloseButton}>
         <IoCloseOutline color="white" size="50" />
-        <DigButton color={Color.Green}>発掘</DigButton>
+        <DigButton color={Color.Green} onClick={onClickExhumeSign}>
+          発掘
+        </DigButton>
         <AttackButton color={Color.Green}>攻撃</AttackButton>
         <DetailButton color={Color.Green} onClick={onClickSignDetailButton}>
           付与

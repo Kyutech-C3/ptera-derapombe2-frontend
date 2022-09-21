@@ -16,6 +16,13 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type BaseSign = {
+  __typename?: 'BaseSign';
+  id: Scalars['String'];
+  name: Scalars['String'];
+  type: Scalars['Int'];
+};
+
 export enum Color {
   Green = 'GREEN',
   Red = 'RED'
@@ -23,6 +30,11 @@ export enum Color {
 
 export type Coordinate = {
   __typename?: 'Coordinate';
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+};
+
+export type CoordinateInput = {
   latitude: Scalars['Float'];
   longitude: Scalars['Float'];
 };
@@ -35,7 +47,7 @@ export type ExhumeResult = {
 
 export type Gallery = {
   __typename?: 'Gallery';
-  baseSignType: Scalars['Int'];
+  baseSign: BaseSign;
   sign: Array<SignInfo>;
 };
 
@@ -159,6 +171,12 @@ export type MutationUpdateUserArgs = {
   name: Scalars['String'];
 };
 
+export type NearlySign = {
+  __typename?: 'NearlySign';
+  distanse: Scalars['Float'];
+  sign: Sign;
+};
+
 export type Polygon = {
   __typename?: 'Polygon';
   coordinates: Array<Coordinate>;
@@ -186,10 +204,16 @@ export type Query = {
   galleries: Array<Gallery>;
   items: Array<Item>;
   mapInfo: MapInfo;
+  nearlySigns: Array<NearlySign>;
   powerRatio: PowerRatio;
   requiredExp: Array<Scalars['Int']>;
   sign: Sign;
   user: User;
+};
+
+
+export type QueryNearlySignsArgs = {
+  signId: Scalars['String'];
 };
 
 
@@ -199,31 +223,30 @@ export type QuerySignArgs = {
 
 export type RegistSignInput = {
   baseSignTypes: Array<Scalars['Int']>;
+  coordinate: CoordinateInput;
   imagePath: Scalars['String'];
-  latitude: Scalars['Float'];
-  longitude: Scalars['Float'];
 };
 
 export type Sign = {
   __typename?: 'Sign';
-  baseSignTypes: Array<Scalars['Int']>;
+  baseSigns: Array<BaseSign>;
   coordinate: Coordinate;
   createdAt: Scalars['DateTime'];
-  group: Color;
-  hitPoint: Scalars['Int'];
+  group?: Maybe<Color>;
+  hitPoint?: Maybe<Scalars['Int']>;
   id: Scalars['String'];
   imagePath: Scalars['String'];
-  items: Array<Item>;
+  items?: Maybe<Array<Item>>;
   linkNum: Scalars['Int'];
   maxHitPoint: Scalars['Int'];
   maxItemSlot: Scalars['Int'];
   maxLinkSlot: Scalars['Int'];
-  owner: User;
+  owner?: Maybe<User>;
 };
 
 export type SignInfo = {
   __typename?: 'SignInfo';
-  baseSignTypes: Array<Scalars['Int']>;
+  baseSigns: Array<BaseSign>;
   coordinate: Coordinate;
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
@@ -268,10 +291,17 @@ export type AddUserMutationVariables = Exact<{
 
 export type AddUserMutation = { __typename?: 'Mutation', addUser: { __typename?: 'User', id: string, name: string, level: number, group: Color, avatarUrl: string } };
 
+export type ExhumeSignMutationVariables = Exact<{
+  signId: Scalars['String'];
+}>;
+
+
+export type ExhumeSignMutation = { __typename?: 'Mutation', exhumeSign: { __typename?: 'ExhumeResult', expPoint: number, items: Array<{ __typename?: 'Item', effect: ItemEffect, id: string, level: number }> } };
+
 export type MapPageInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MapPageInfoQuery = { __typename?: 'Query', requiredExp: Array<number>, mapInfo: { __typename?: 'MapInfo', signs: Array<{ __typename?: 'Sign', id: string, imagePath: string, baseSignTypes: Array<number>, group: Color, maxHitPoint: number, hitPoint: number, linkNum: number, items: Array<{ __typename?: 'Item', effect: ItemEffect, id: string, level: number, name: string, value: number }>, coordinate: { __typename?: 'Coordinate', latitude: number, longitude: number } }>, polygons: Array<{ __typename?: 'Polygon', group: Color, coordinates: Array<{ __typename?: 'Coordinate', latitude: number, longitude: number }> }>, links: Array<{ __typename?: 'Link', group: Color, otherCoordinate: { __typename?: 'Coordinate', latitude: number, longitude: number }, oneCoordinate: { __typename?: 'Coordinate', latitude: number, longitude: number } }> }, user: { __typename?: 'User', name: string, level: number, expPoint: number, group: Color, avatarUrl: string }, powerRatio: { __typename?: 'PowerRatio', green: number, red: number } };
+export type MapPageInfoQuery = { __typename?: 'Query', requiredExp: Array<number>, mapInfo: { __typename?: 'MapInfo', signs: Array<{ __typename?: 'Sign', id: string, imagePath: string, group?: Color | null, maxHitPoint: number, hitPoint?: number | null, linkNum: number, items?: Array<{ __typename?: 'Item', effect: ItemEffect, id: string, level: number, name: string, value: number }> | null, coordinate: { __typename?: 'Coordinate', latitude: number, longitude: number }, baseSigns: Array<{ __typename?: 'BaseSign', id: string, type: number }> }>, polygons: Array<{ __typename?: 'Polygon', group: Color, coordinates: Array<{ __typename?: 'Coordinate', latitude: number, longitude: number }> }>, links: Array<{ __typename?: 'Link', group: Color, otherCoordinate: { __typename?: 'Coordinate', latitude: number, longitude: number }, oneCoordinate: { __typename?: 'Coordinate', latitude: number, longitude: number } }> }, user: { __typename?: 'User', name: string, level: number, expPoint: number, group: Color, avatarUrl: string }, powerRatio: { __typename?: 'PowerRatio', green: number, red: number } };
 
 export type UserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -318,13 +348,50 @@ export function useAddUserMutation(baseOptions?: Apollo.MutationHookOptions<AddU
 export type AddUserMutationHookResult = ReturnType<typeof useAddUserMutation>;
 export type AddUserMutationResult = Apollo.MutationResult<AddUserMutation>;
 export type AddUserMutationOptions = Apollo.BaseMutationOptions<AddUserMutation, AddUserMutationVariables>;
+export const ExhumeSignDocument = gql`
+    mutation exhumeSign($signId: String!) {
+  exhumeSign(signId: $signId) {
+    items {
+      effect
+      id
+      level
+    }
+    expPoint
+  }
+}
+    `;
+export type ExhumeSignMutationFn = Apollo.MutationFunction<ExhumeSignMutation, ExhumeSignMutationVariables>;
+
+/**
+ * __useExhumeSignMutation__
+ *
+ * To run a mutation, you first call `useExhumeSignMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useExhumeSignMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [exhumeSignMutation, { data, loading, error }] = useExhumeSignMutation({
+ *   variables: {
+ *      signId: // value for 'signId'
+ *   },
+ * });
+ */
+export function useExhumeSignMutation(baseOptions?: Apollo.MutationHookOptions<ExhumeSignMutation, ExhumeSignMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ExhumeSignMutation, ExhumeSignMutationVariables>(ExhumeSignDocument, options);
+      }
+export type ExhumeSignMutationHookResult = ReturnType<typeof useExhumeSignMutation>;
+export type ExhumeSignMutationResult = Apollo.MutationResult<ExhumeSignMutation>;
+export type ExhumeSignMutationOptions = Apollo.BaseMutationOptions<ExhumeSignMutation, ExhumeSignMutationVariables>;
 export const MapPageInfoDocument = gql`
     query MapPageInfo {
   mapInfo {
     signs {
       id
       imagePath
-      baseSignTypes
       group
       maxHitPoint
       hitPoint
@@ -339,6 +406,10 @@ export const MapPageInfoDocument = gql`
       coordinate {
         latitude
         longitude
+      }
+      baseSigns {
+        id
+        type
       }
     }
     polygons {
