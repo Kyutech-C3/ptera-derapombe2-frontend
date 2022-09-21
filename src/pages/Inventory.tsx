@@ -126,7 +126,7 @@ const ItemExWin = styled.div`
   position: absolute;
   display: flex;
   margin: 0;
-  margin-top: 10vh;
+  bottom: 10vh;
   width: 100%;
   height: 30vh;
   color: white;
