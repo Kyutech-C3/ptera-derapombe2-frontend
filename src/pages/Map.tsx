@@ -26,27 +26,27 @@ function Map() {
     },
   })
 
-  return (
-    mapPageInfo.data && (
-      <>
-        {displaySignDetail ? (
-          <SignDetail id="hogefuga" />
-        ) : (
-          <>
-            <GoogleMaps
-              data={mapPageInfo.data}
-              showSignDetail={() => setDisplaySignDetail(true)}
-            />
-            <HomeBtn />
-            <TopBar data={mapPageInfo.data} />
-          </>
-        )}
-        <BottomNavigationBar
-          groupColor={mapPageInfo.data.user.group}
-          displaySignDetail={displaySignDetail}
-        />
-      </>
-    )
+  return mapPageInfo.data ? (
+    <>
+      {displaySignDetail ? (
+        <SignDetail id="hogefuga" />
+      ) : (
+        <>
+          <GoogleMaps
+            data={mapPageInfo.data}
+            showSignDetail={() => setDisplaySignDetail(true)}
+          />
+          <HomeBtn />
+          <TopBar data={mapPageInfo.data} />
+        </>
+      )}
+      <BottomNavigationBar
+        groupColor={mapPageInfo.data.user.group}
+        displaySignDetail={displaySignDetail}
+      />
+    </>
+  ) : (
+    <></>
   )
 }
 
