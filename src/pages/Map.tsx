@@ -29,14 +29,16 @@ function Map() {
   return mapPageInfo.data ? (
     <>
       {displaySignDetail ? (
-        <SignDetail id="hogefuga" />
+        <>
+          <SignDetail id="hogefuga" />
+          <HomeBtn />
+        </>
       ) : (
         <>
           <GoogleMaps
             data={mapPageInfo.data}
             showSignDetail={() => setDisplaySignDetail(true)}
           />
-          <HomeBtn />
           <TopBar data={mapPageInfo.data} />
         </>
       )}
