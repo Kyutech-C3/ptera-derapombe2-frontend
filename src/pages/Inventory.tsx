@@ -135,7 +135,7 @@ const FlexColumn = styled.div`
   /* display: flex; */
   flex-direction: column;
 `
-const ItemEx = styled.div`
+const ItemExName = styled.div`
   margin: 0px;
   padding: 0 2.5vw;
   padding-top: 5vh;
@@ -145,16 +145,58 @@ const ItemEx = styled.div`
   text-align: left;
   overflow-wrap: break-word;
 `
+const ItemExDetail = styled.div`
+  margin: 0px;
+  padding: 0 2.5vw;
+  padding-top: 5vh;
+  width: 50vw;
+  /* height: calc(30vh / 3); */
+  font-size: 16px;
+  text-align: left;
+  overflow-wrap: break-word;
+`
 
-const items = [
-  '../assets/images/attack-1.png',
-  '../assets/images/attack-2.png',
-  '../assets/images/attack-3.png',
-  '../assets/images/attack-sign-1.png',
-  '../assets/images/attack-sign-2.png',
-  '../assets/images/attack-sign-3.png',
-  '../assets/images/endurance-1.png',
-  '../assets/images/endurance-2.png',
+const itemExplanation = [
+  {
+    icon: '../assets/images/endurance-1.png',
+    name: '攻撃体制Ⅰ',
+    detail: '当チームのランドマークの攻撃耐性アップ(小)',
+  },
+  {
+    icon: '../assets/images/endurance-2.png',
+    name: '攻撃耐性Ⅱ',
+    detail: '当チームのランドマークの攻撃耐性アップ(中)',
+  },
+  {
+    icon: '../assets/images/endurance-3.png',
+    name: '攻撃耐性Ⅲ',
+    detail: '当チームのランドマークの攻撃耐性アップ(高)',
+  },
+  {
+    icon: '../assets/images/attack-1.png',
+    name: '攻撃力上昇Ⅰ',
+    detail: '攻撃力アップ(小)',
+  },
+  {
+    icon: '../assets/images/attack-2.png',
+    name: '攻撃力上昇Ⅱ',
+    detail: '攻撃力アップ(中)',
+  },
+  {
+    icon: '../assets/images/attack-3.png',
+    name: '攻撃力上昇Ⅲ',
+    detail: '攻撃力アップ(高)',
+  },
+  {
+    icon: '../assets/images/attack-sign-2.png',
+    name: '攻撃Ⅱ',
+    detail: '敵チームのランドマークに攻撃(中)',
+  },
+  {
+    icon: '../assets/images/attack-sign-3.png',
+    name: '攻撃Ⅲ',
+    detail: '敵チームのランドマークに攻撃(高)',
+  },
 ]
 const colloects = [
   '../assets/images/endurance-1.png',
@@ -166,17 +208,20 @@ const colloects = [
   '../assets/images/attack-sign-2.png',
   '../assets/images/attack-sign-3.png',
 ]
-const itemExplanation = [
-  {
-    icon: '../assets/images/attack-1.png',
-    name: 'Name',
-    detail: 'apoiargavfnakuhjeujnrfdxcf',
-  },
-]
+// const items = [
+//   {
+//     icon: '../assets/images/attack-1.png',
+//     name: 'Name',
+//     detail: 'apoiargavfnakuhjeujnrfdxcf',
+//   },
+// ]
 
 function Inventory() {
   const [inventoryBtn, setInventoryBtn] = useState(true)
   const [visible, setVisible] = useState(true)
+  const [itemIcon, setItemIcon] = useState('')
+  const [itemName, setItemName] = useState('')
+  const [itemDetail, setItemDetail] = useState('')
 
   return (
     <Container color={Color.Green}>
@@ -185,15 +230,18 @@ function Inventory() {
           <Head>ITEM</Head>
           <SubBack color={Color.Green}>
             <SetContents>
-              {items.map((item, i) => {
+              {itemExplanation.map((item, i) => {
                 return (
                   <Items
                     onClick={() => {
                       setVisible(false)
+                      setItemIcon(item.icon)
+                      setItemName(item.name)
+                      setItemDetail(item.detail)
                     }}
                     key={i}
                   >
-                    <img src={item} width="70px"></img>
+                    <img src={item.icon} width="70px"></img>
                   </Items>
                 )
               })}
@@ -218,7 +266,21 @@ function Inventory() {
       )}
       {!visible && (
         <ItemExWin>
-          {itemExplanation.map((item, i) => {
+          <ItemDetails
+            onClick={() => {
+              setInventoryBtn(false)
+            }}
+            // key={i}
+          >
+            <ItemExIcon>
+              <img src={itemIcon} width="70"></img>
+            </ItemExIcon>
+            <FlexColumn>
+              <ItemExName>{itemName}</ItemExName>
+              <ItemExDetail>{itemDetail}</ItemExDetail>
+            </FlexColumn>
+          </ItemDetails>
+          {/* {items.map((item, i) => {
             return (
               <ItemDetails
                 onClick={() => {
@@ -227,7 +289,7 @@ function Inventory() {
                 key={i}
               >
                 <ItemExIcon>
-                  <img src={item.icon} width="70"></img>
+                  <img src={itemIcon} width="70"></img>
                 </ItemExIcon>
                 <FlexColumn>
                   <ItemEx>{item.name}</ItemEx>
@@ -235,7 +297,7 @@ function Inventory() {
                 </FlexColumn>
               </ItemDetails>
             )
-          })}
+          })} */}
           <CloseBtn onClick={() => setVisible(true)}>close</CloseBtn>
         </ItemExWin>
       )}
