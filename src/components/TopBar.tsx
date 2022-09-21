@@ -53,7 +53,7 @@ const RatioProgressBar = styled.div`
 `
 
 const RatioProgressRedDegree = styled.div<{ ratio: number }>`
-  width: ${(props) => `${props.ratio}%`};
+  width: ${(props) => `${100 * props.ratio}%`};
   height: 10px;
   border-radius: 3px 0 0 3px;
   background-color: #ff0000;
