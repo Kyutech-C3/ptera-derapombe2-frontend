@@ -1,4 +1,10 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+} from 'react'
 import Webcam from 'react-webcam'
 import styled from 'styled-components'
 import CameraCapture from '../components/CameraCapture'
@@ -10,7 +16,7 @@ import { usePredictImageMutation } from '../graphql/generated'
 
 const Container = styled.div`
   width: 100vw;
-  height: 100vh;
+  /* height: 100vh; */
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -26,6 +32,22 @@ const ErrorText = () => (
 )
 
 function Camera() {
+  const useWindowSize = (): number[] => {
+    const [size, setSize] = useState([0, 0])
+    useLayoutEffect(() => {
+      const updateSize = (): void => {
+        setSize([window.innerWidth, window.innerHeight])
+      }
+
+      window.addEventListener('resize', updateSize)
+      updateSize()
+
+      return () => window.removeEventListener('resize', updateSize)
+    }, [])
+    return size
+  }
+  const [width, height] = useWindowSize()
+
   const [nowLoading, setNowLoading] = useState<boolean>(false)
   const [isAvailable, setAvailable] = useState(false)
   const isFirstRef = useRef(true)
@@ -50,15 +72,13 @@ function Camera() {
   const webcamRef = useRef<Webcam>(null)
   const [predictImage] = usePredictImageMutation()
   const onCapture = useCallback(() => {
-    setNowLoading(true)
     navigator.geolocation.getCurrentPosition((position) => {
+      setNowLoading(true)
+      screenShot = webcamRef.current?.getScreenshot()
       const { latitude, longitude } = position.coords
       console.log(latitude)
       console.log(longitude)
-      screenShot = webcamRef.current?.getScreenshot()
-      // if (screenShot) {
-      //   setImage(screenShot)
-      // }
+
       const blob = atob(screenShot!.replace(/^.*,/, ''))
       let buffer = new Uint8Array(blob.length)
       for (let i = 0; i < blob.length; i++) {
@@ -100,7 +120,7 @@ function Camera() {
   if (isFirstRef.current) return <div className="App">Loading...</div>
 
   return (
-    <Container>
+    <Container style={{ height: height + 'px' }}>
       {!isFirstRef && !isAvailable && <ErrorText />}
       {image === undefined && screenShot === undefined ? (
         <CameraCapture
@@ -110,9 +130,12 @@ function Camera() {
       ) : (
         <CameraResult
           predictResult={scores}
-          onClickRecapture={() =>
+          onClickRecapture={() => {
             setScores({ scores: [], url: '', latitude: NaN, longitude: NaN })
-          }
+            setImage(undefined)
+            setNowLoading(false)
+            screenShot = undefined
+          }}
         />
       )}
     </Container>

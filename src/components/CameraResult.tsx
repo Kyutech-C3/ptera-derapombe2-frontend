@@ -46,6 +46,7 @@ const ActionButtonContainer = styled.div`
 
 const ActionButton = styled.button`
   margin: 0 20px;
+  color: black;
 `
 
 type CameraResult = {
@@ -107,38 +108,42 @@ function CameraResult(props: CameraResult) {
       </ResultContainer>
       <ActionButtonContainer>
         <ActionButton onClick={onClickRecapture}>再撮影</ActionButton>
-        <ActionButton
-          onClick={() => {
-            console.log(cookies)
-            let signTypes: number[] = []
-            predictResult.scores.map((score) => {
-              signTypes.push(score[0].signType)
-            })
-            registSign({
-              variables: {
-                baseSignTypes: signTypes,
-                coordinate: {
-                  latitude: predictResult.latitude,
-                  longitude: predictResult.longitude,
+        {predictResult.scores.length >= 1 ? (
+          <ActionButton
+            onClick={() => {
+              console.log(cookies)
+              let signTypes: number[] = []
+              predictResult.scores.map((score) => {
+                signTypes.push(score[0].signType)
+              })
+              registSign({
+                variables: {
+                  baseSignTypes: signTypes,
+                  coordinate: {
+                    latitude: predictResult.latitude,
+                    longitude: predictResult.longitude,
+                  },
+                  imagePath: predictResult.url,
                 },
-                imagePath: predictResult.url,
-              },
-              context: {
-                headers: {
-                  Authorization: `Bearer ${cookies.accessToken ?? ''}`,
+                context: {
+                  headers: {
+                    Authorization: `Bearer ${cookies.accessToken ?? ''}`,
+                  },
                 },
-              },
-              onError: (error) => {
-                console.error(error)
-              },
-            }).then((value) => {
-              console.log(value.data?.registSign)
-              navigate('/map')
-            })
-          }}
-        >
-          確定
-        </ActionButton>
+                onError: (error) => {
+                  console.error(error)
+                },
+              }).then((value) => {
+                console.log(value.data?.registSign)
+                navigate('/map')
+              })
+            }}
+          >
+            確定
+          </ActionButton>
+        ) : (
+          <></>
+        )}
       </ActionButtonContainer>
     </>
   )
