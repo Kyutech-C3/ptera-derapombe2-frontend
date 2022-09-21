@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { IoCloseOutline } from 'react-icons/io5'
 import styled from 'styled-components'
 import { Color, ItemEffect, MapPageInfoQuery } from '../graphql/generated'
 
@@ -65,7 +66,6 @@ const ColorIcon = styled.img`
 `
 
 const SignInfoContainer = styled.div`
-  margin-top: 11vh;
   padding: 20px;
   color: black;
   font-size: 14px;
@@ -133,13 +133,27 @@ const ResistanceItem = styled.div<{ imagePath: string }>`
   background-size: cover;
 `
 
+const CloseButton = styled.div`
+  width: 50px;
+  height: 50px;
+  background-color: rgb(27 27 27 / 70%);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 10px;
+  margin-top: 10px;
+`
+
 type SignDetail = {
   data: MapPageInfoQuery
   index: number
+  onClickCloseButton: () => void
 }
 
 function SignDetail(props: SignDetail) {
-  const { data, index } = props
+  const { data, index, onClickCloseButton } = props
   const targetData = data.mapInfo.signs[index]
   const [resistanceValueSum, setResistanceValueSum] = useState(0)
   const [enduranceValueSum, setEnduranceValueSum] = useState(0)
@@ -195,6 +209,9 @@ function SignDetail(props: SignDetail) {
           alt={targetData.group === Color.Red ? 'icon-kitsune' : 'icon-tanuki'}
         />
       </PhotoImage>
+      <CloseButton onClick={onClickCloseButton}>
+        <IoCloseOutline color="white" size="40" />
+      </CloseButton>
       <SignInfoContainer>
         <SignInfo>
           <SignInfoTextContent>
