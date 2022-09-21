@@ -21,10 +21,10 @@ import GraphQL from './pages/GraphQL'
 import TeamSelect from './pages/TeamSelect'
 
 const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-  },
+  // {
+  //   path: '/',
+  //   element: <App />,
+  // },
   {
     path: '/map',
     element: <Map />,
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
     element: <Inventory />,
   },
   {
-    path: '/login',
+    path: '/',
     element: <Login />,
   },
   {
