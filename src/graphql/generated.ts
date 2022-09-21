@@ -16,6 +16,13 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type BaseSign = {
+  __typename?: 'BaseSign';
+  id: Scalars['String'];
+  name: Scalars['String'];
+  type: Scalars['Int'];
+};
+
 export enum Color {
   Green = 'GREEN',
   Red = 'RED'
@@ -23,6 +30,11 @@ export enum Color {
 
 export type Coordinate = {
   __typename?: 'Coordinate';
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+};
+
+export type CoordinateInput = {
   latitude: Scalars['Float'];
   longitude: Scalars['Float'];
 };
@@ -35,7 +47,7 @@ export type ExhumeResult = {
 
 export type Gallery = {
   __typename?: 'Gallery';
-  baseSignType: Scalars['Int'];
+  baseSign: BaseSign;
   sign: Array<SignInfo>;
 };
 
@@ -159,6 +171,12 @@ export type MutationUpdateUserArgs = {
   name: Scalars['String'];
 };
 
+export type NearlySign = {
+  __typename?: 'NearlySign';
+  distanse: Scalars['Float'];
+  sign: Sign;
+};
+
 export type Polygon = {
   __typename?: 'Polygon';
   coordinates: Array<Coordinate>;
@@ -186,10 +204,16 @@ export type Query = {
   galleries: Array<Gallery>;
   items: Array<Item>;
   mapInfo: MapInfo;
+  nearlySigns: Array<NearlySign>;
   powerRatio: PowerRatio;
   requiredExp: Array<Scalars['Int']>;
   sign: Sign;
   user: User;
+};
+
+
+export type QueryNearlySignsArgs = {
+  signId: Scalars['String'];
 };
 
 
@@ -199,31 +223,30 @@ export type QuerySignArgs = {
 
 export type RegistSignInput = {
   baseSignTypes: Array<Scalars['Int']>;
+  coordinate: CoordinateInput;
   imagePath: Scalars['String'];
-  latitude: Scalars['Float'];
-  longitude: Scalars['Float'];
 };
 
 export type Sign = {
   __typename?: 'Sign';
-  baseSignTypes: Array<Scalars['Int']>;
+  baseSigns: Array<BaseSign>;
   coordinate: Coordinate;
   createdAt: Scalars['DateTime'];
-  group: Color;
-  hitPoint: Scalars['Int'];
+  group?: Maybe<Color>;
+  hitPoint?: Maybe<Scalars['Int']>;
   id: Scalars['String'];
   imagePath: Scalars['String'];
-  items: Array<Item>;
+  items?: Maybe<Array<Item>>;
   linkNum: Scalars['Int'];
   maxHitPoint: Scalars['Int'];
   maxItemSlot: Scalars['Int'];
   maxLinkSlot: Scalars['Int'];
-  owner: User;
+  owner?: Maybe<User>;
 };
 
 export type SignInfo = {
   __typename?: 'SignInfo';
-  baseSignTypes: Array<Scalars['Int']>;
+  baseSigns: Array<BaseSign>;
   coordinate: Coordinate;
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
@@ -277,13 +300,12 @@ export type PredictImageMutation = { __typename?: 'Mutation', predictImage: { __
 
 export type RegistSignMutationVariables = Exact<{
   baseSignTypes: Array<Scalars['Int']> | Scalars['Int'];
-  longitude: Scalars['Float'];
-  latitude: Scalars['Float'];
   imagePath: Scalars['String'];
+  coordinate: CoordinateInput;
 }>;
 
 
-export type RegistSignMutation = { __typename?: 'Mutation', registSign: { __typename?: 'Sign', id: string, baseSignTypes: Array<number>, coordinate: { __typename?: 'Coordinate', latitude: number, longitude: number } } };
+export type RegistSignMutation = { __typename?: 'Mutation', registSign: { __typename?: 'Sign', id: string, coordinate: { __typename?: 'Coordinate', latitude: number, longitude: number }, baseSigns: Array<{ __typename?: 'BaseSign', id: string, name: string, type: number }> } };
 
 export type MapPageInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -374,16 +396,20 @@ export type PredictImageMutationHookResult = ReturnType<typeof usePredictImageMu
 export type PredictImageMutationResult = Apollo.MutationResult<PredictImageMutation>;
 export type PredictImageMutationOptions = Apollo.BaseMutationOptions<PredictImageMutation, PredictImageMutationVariables>;
 export const RegistSignDocument = gql`
-    mutation registSign($baseSignTypes: [Int!]!, $longitude: Float!, $latitude: Float!, $imagePath: String!) {
+    mutation registSign($baseSignTypes: [Int!]!, $imagePath: String!, $coordinate: CoordinateInput!) {
   registSign(
-    registSignInput: {baseSignTypes: $baseSignTypes, longitude: $longitude, latitude: $latitude, imagePath: $imagePath}
+    registSignInput: {baseSignTypes: $baseSignTypes, coordinate: $coordinate, imagePath: $imagePath}
   ) {
     coordinate {
       latitude
       longitude
     }
     id
-    baseSignTypes
+    baseSigns {
+      id
+      name
+      type
+    }
   }
 }
     `;
@@ -403,9 +429,8 @@ export type RegistSignMutationFn = Apollo.MutationFunction<RegistSignMutation, R
  * const [registSignMutation, { data, loading, error }] = useRegistSignMutation({
  *   variables: {
  *      baseSignTypes: // value for 'baseSignTypes'
- *      longitude: // value for 'longitude'
- *      latitude: // value for 'latitude'
  *      imagePath: // value for 'imagePath'
+ *      coordinate: // value for 'coordinate'
  *   },
  * });
  */
