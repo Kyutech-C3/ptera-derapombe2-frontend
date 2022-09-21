@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AiOutlineHome } from 'react-icons/ai'
 import styled from 'styled-components'
-import { Color } from '../graphql/generated'
+import { Color, useMapPageInfoQuery } from '../graphql/generated'
 
 const SetHome = styled(AiOutlineHome)<{
   borderColor: Color
@@ -18,7 +18,7 @@ const SetHome = styled(AiOutlineHome)<{
   background-color: white;
   border-radius: 100%;
   border: 3px solid
-    ${(props) => (props.borderColor == Color.Red ? '#ff8f8f' : '#96ff89')};
+    ${(props) => (props.borderColor == Color.Red ? '#ffe7e7' : '#eaffe7')};
   top: 85%;
   left: 50%;
   transform: translateY(-15%);
@@ -30,13 +30,14 @@ const HomeLink = styled(Link)`
 
 function HomeBtn() {
   const [inventoryBtn, setInventoryBtn] = useState(true)
+  const groupColor = useMapPageInfoQuery().data?.user.group
 
   return (
     <HomeLink to="/map">
       <SetHome
         onClick={() => setInventoryBtn(true)}
+        borderColor={groupColor}
         isAction={inventoryBtn}
-        borderColor={Color.Green}
       />
     </HomeLink>
   )

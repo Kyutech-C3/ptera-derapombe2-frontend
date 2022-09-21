@@ -14,13 +14,18 @@ export type Scalars = {
   Int: number;
   Float: number;
   DateTime: any;
-  Upload: any;
 };
 
 export enum Color {
   Green = 'GREEN',
   Red = 'RED'
 }
+
+export type Coordinate = {
+  __typename?: 'Coordinate';
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+};
 
 export type ExhumeResult = {
   __typename?: 'ExhumeResult';
@@ -50,10 +55,21 @@ export enum ItemEffect {
   Resistance = 'RESISTANCE'
 }
 
+export type Link = {
+  __typename?: 'Link';
+  createdAt: Scalars['DateTime'];
+  group: Color;
+  oneCoordinate: Coordinate;
+  otherCoordinate: Coordinate;
+  otherSignId: Scalars['String'];
+  polygonId?: Maybe<Scalars['String']>;
+  signId: Scalars['String'];
+};
+
 export type MapInfo = {
   __typename?: 'MapInfo';
+  links: Array<Link>;
   polygons: Array<Polygon>;
-  segments: Array<Segment>;
   signs: Array<Sign>;
 };
 
@@ -64,8 +80,9 @@ export type Mutation = {
   attackSign: UpdateSignData;
   captureSign: Sign;
   changeItem: Array<Item>;
+  connectSigns: MapInfo;
   deleteItem: Array<Item>;
-  exhumeSign: Array<ExhumeResult>;
+  exhumeSign: ExhumeResult;
   healSign: UpdateSignData;
   predictImage: PredictResult;
   registSign: Sign;
@@ -104,6 +121,12 @@ export type MutationChangeItemArgs = {
 };
 
 
+export type MutationConnectSignsArgs = {
+  otherSignId: Scalars['String'];
+  signId: Scalars['String'];
+};
+
+
 export type MutationDeleteItemArgs = {
   itemId: Scalars['String'];
   signId: Scalars['String'];
@@ -122,7 +145,7 @@ export type MutationHealSignArgs = {
 
 
 export type MutationPredictImageArgs = {
-  image: Scalars['Upload'];
+  file: Scalars['String'];
 };
 
 
@@ -132,11 +155,13 @@ export type MutationRegistSignArgs = {
 
 
 export type MutationUpdateUserArgs = {
+  avatarUrl: Scalars['String'];
   name: Scalars['String'];
 };
 
 export type Polygon = {
   __typename?: 'Polygon';
+  coordinates: Array<Coordinate>;
   createdAt: Scalars['DateTime'];
   group: Color;
   id: Scalars['String'];
@@ -152,7 +177,7 @@ export type PowerRatio = {
 
 export type PredictResult = {
   __typename?: 'PredictResult';
-  scores?: Maybe<Array<SuggestResult>>;
+  scores?: Maybe<Array<Array<SuggestResult>>>;
   status: Scalars['Boolean'];
 };
 
@@ -162,6 +187,7 @@ export type Query = {
   items: Array<Item>;
   mapInfo: MapInfo;
   powerRatio: PowerRatio;
+  requiredExp: Array<Scalars['Int']>;
   sign: Sign;
   user: User;
 };
@@ -178,39 +204,30 @@ export type RegistSignInput = {
   longitude: Scalars['Float'];
 };
 
-export type Segment = {
-  __typename?: 'Segment';
-  createdAt: Scalars['DateTime'];
-  id: Scalars['String'];
-  otherSignId: Scalars['String'];
-  signId: Scalars['String'];
-};
-
 export type Sign = {
   __typename?: 'Sign';
   baseSignTypes: Array<Scalars['Int']>;
+  coordinate: Coordinate;
   createdAt: Scalars['DateTime'];
-  group?: Maybe<Color>;
-  hitPoint?: Maybe<Scalars['Int']>;
+  group: Color;
+  hitPoint: Scalars['Int'];
   id: Scalars['String'];
   imagePath: Scalars['String'];
-  items?: Maybe<Array<Item>>;
-  latitude: Scalars['Float'];
-  longitude: Scalars['Float'];
+  items: Array<Item>;
+  linkNum: Scalars['Int'];
   maxHitPoint: Scalars['Int'];
   maxItemSlot: Scalars['Int'];
   maxLinkSlot: Scalars['Int'];
-  owner?: Maybe<User>;
+  owner: User;
 };
 
 export type SignInfo = {
   __typename?: 'SignInfo';
   baseSignTypes: Array<Scalars['Int']>;
+  coordinate: Coordinate;
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
   imagePath: Scalars['String'];
-  latitude: Scalars['Float'];
-  longitude: Scalars['Float'];
   maxHitPoint: Scalars['Int'];
   maxItemSlot: Scalars['Int'];
   maxLinkSlot: Scalars['Int'];
@@ -219,6 +236,7 @@ export type SignInfo = {
 export type SuggestResult = {
   __typename?: 'SuggestResult';
   score: Scalars['Float'];
+  signName: Scalars['String'];
   signType: Scalars['Int'];
 };
 
@@ -249,6 +267,11 @@ export type AddUserMutationVariables = Exact<{
 
 
 export type AddUserMutation = { __typename?: 'Mutation', addUser: { __typename?: 'User', id: string, name: string, level: number, group: Color, avatarUrl: string } };
+
+export type InventoryInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InventoryInfoQuery = { __typename?: 'Query', items: Array<{ __typename?: 'Item', effect: ItemEffect, id: string, level: number, name: string, value: number }>, galleries: Array<{ __typename?: 'Gallery', baseSignType: number }> };
 
 export type MapPageInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -300,6 +323,47 @@ export function useAddUserMutation(baseOptions?: Apollo.MutationHookOptions<AddU
 export type AddUserMutationHookResult = ReturnType<typeof useAddUserMutation>;
 export type AddUserMutationResult = Apollo.MutationResult<AddUserMutation>;
 export type AddUserMutationOptions = Apollo.BaseMutationOptions<AddUserMutation, AddUserMutationVariables>;
+export const InventoryInfoDocument = gql`
+    query InventoryInfo {
+  items {
+    effect
+    id
+    level
+    name
+    value
+  }
+  galleries {
+    baseSignType
+  }
+}
+    `;
+
+/**
+ * __useInventoryInfoQuery__
+ *
+ * To run a query within a React component, call `useInventoryInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInventoryInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInventoryInfoQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInventoryInfoQuery(baseOptions?: Apollo.QueryHookOptions<InventoryInfoQuery, InventoryInfoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<InventoryInfoQuery, InventoryInfoQueryVariables>(InventoryInfoDocument, options);
+      }
+export function useInventoryInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InventoryInfoQuery, InventoryInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<InventoryInfoQuery, InventoryInfoQueryVariables>(InventoryInfoDocument, options);
+        }
+export type InventoryInfoQueryHookResult = ReturnType<typeof useInventoryInfoQuery>;
+export type InventoryInfoLazyQueryHookResult = ReturnType<typeof useInventoryInfoLazyQuery>;
+export type InventoryInfoQueryResult = Apollo.QueryResult<InventoryInfoQuery, InventoryInfoQueryVariables>;
 export const MapPageInfoDocument = gql`
     query MapPageInfo {
   user {

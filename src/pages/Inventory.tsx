@@ -1,9 +1,15 @@
 import { useState } from 'react'
-import { Color } from '../graphql/generated'
+import {
+  Color,
+  useInventoryInfoQuery,
+  useMapPageInfoQuery,
+} from '../graphql/generated'
+import { useCookies } from 'react-cookie'
 import styled from 'styled-components'
 import { BsBoxSeam } from 'react-icons/bs'
 import { BiLibrary } from 'react-icons/bi'
 import HomeBtn from '../components/HomeBtn'
+// import { key } from 'localforage'
 
 const Container = styled.div<{
   color: Color
@@ -58,12 +64,16 @@ const Text = styled.span`
   color: black;
 `
 const CloseBtn = styled.button`
-  width: 20vw;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  transform: translateX(-6px);
+  width: 10vw;
   height: 30vh;
-  background-color: black;
+  background-color: rgb(0, 0, 0, 0.5);
   color: white;
   text-align: center;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 10px 10px 0;
 `
 
 /*** アイテム表示場所 ***/
@@ -76,7 +86,7 @@ const SubBack = styled.article<{ color: Color }>`
   background-color: rgb(255, 255, 255, 0.8);
   border: 3px solid;
   border-color: ${(props) =>
-    props.color == Color.Red ? '#ff8f8f' : '#96ff89'};
+    props.color == Color.Red ? '#ffe7e7' : '#eaffe7'};
   border-radius: 20px;
 `
 const SetContents = styled.section`
@@ -100,7 +110,7 @@ const CollectBox = styled(SetBtn)<{ isAction: boolean }>`
   background: ${(props) => (props.isAction ? 'white' : 'transparent')};
 `
 const Items = styled.button`
-  position: relatve;
+  position: relative;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -113,7 +123,7 @@ const ItemsCount = styled.div`
   position: absolute;
   margin: 0;
   padding: 3px;
-  transform: translate(48px, 40px);
+  transform: translate(72px, 42px);
   width: 25px;
   height: 25px;
   color: black;
@@ -129,20 +139,22 @@ const ItemExWin = styled.div`
   display: flex;
   margin: 0;
   bottom: 11vh;
-  width: 100%;
+  width: 100vw;
   height: 30vh;
+  /* font-size: 0; */
+  letter-spacing: 0;
   color: black;
-  box-shadow: 5px 5px 5px #8a939c;
-  border-radius: 0 8px 8px 0;
-  background-color: rgb(220, 220, 220, 0.9);
+  box-shadow: -5px 5px 5px #8a939c;
+  border-radius: 0 10px 10px 0;
+  background-color: rgb(220, 220, 220);
 `
 const ItemDetails = styled.div`
   display: flex;
   background-color: transparent;
-  width: 80vw;
+  width: 70vw;
 `
 const ItemExIcon = styled.div`
-  padding: 10vh 0;
+  padding: 10vh 5px;
   /* padding-left: 1vw; */
   width: 25vw;
   text-align: center;
@@ -172,107 +184,6 @@ const ItemExDetail = styled.div`
   overflow-wrap: break-word;
 `
 
-const itemExplanation = [
-  {
-    icon: '/images/endurance-1.png',
-    name: '攻撃体制Ⅰ',
-    detail: '当チームのランドマークの攻撃耐性アップ(小)',
-    cnt: '3',
-  },
-  {
-    icon: '/images/endurance-2.png',
-    name: '攻撃耐性Ⅱ',
-    detail: '当チームのランドマークの攻撃耐性アップ(中)',
-    cnt: '1',
-  },
-  {
-    icon: '/images/endurance-3.png',
-    name: '攻撃耐性Ⅲ',
-    detail: '当チームのランドマークの攻撃耐性アップ(高)',
-    cnt: '3',
-  },
-  {
-    icon: '/images/attack-1.png',
-    name: '攻撃力上昇Ⅰ',
-    detail: '攻撃力アップ(小)',
-    cnt: '6',
-  },
-  {
-    icon: '/images/attack-2.png',
-    name: '攻撃力上昇Ⅱ',
-    detail: '攻撃力アップ(中)',
-    cnt: '1',
-  },
-  {
-    icon: '/images/attack-3.png',
-    name: '攻撃力上昇Ⅲ',
-    detail: '攻撃力アップ(高)',
-    cnt: '1',
-  },
-  {
-    icon: '/images/attack-sign-2.png',
-    name: '攻撃Ⅱ',
-    detail: '敵チームのランドマークに攻撃(中)',
-    cnt: '2',
-  },
-  {
-    icon: '/images/attack-sign-3.png',
-    name: '攻撃Ⅲ',
-    detail: '敵チームのランドマークに攻撃(高)',
-    cnt: '1',
-  },
-]
-const colloects = [
-  {
-    icon: '/images/endurance-1.png',
-    name: '攻撃体制Ⅰ',
-    detail: '当チームのランドマークの攻撃耐性アップ(小)',
-    cnt: '3',
-  },
-  {
-    icon: '/images/endurance-2.png',
-    name: '攻撃耐性Ⅱ',
-    detail: '当チームのランドマークの攻撃耐性アップ(中)',
-    cnt: '1',
-  },
-  {
-    icon: '/images/endurance-3.png',
-    name: '攻撃耐性Ⅲ',
-    detail: '当チームのランドマークの攻撃耐性アップ(高)',
-    cnt: '3',
-  },
-  {
-    icon: '/images/attack-1.png',
-    name: '攻撃力上昇Ⅰ',
-    detail: '攻撃力アップ(小)',
-    cnt: '6',
-  },
-  {
-    icon: '/images/attack-2.png',
-    name: '攻撃力上昇Ⅱ',
-    detail: '攻撃力アップ(中)',
-    cnt: '1',
-  },
-  {
-    icon: '/images/attack-3.png',
-    name: '攻撃力上昇Ⅲ',
-    detail: '攻撃力アップ(高)',
-    cnt: '1',
-  },
-  {
-    icon: '/images/attack-sign-2.png',
-    name: '攻撃Ⅱ',
-    detail: '敵チームのランドマークに攻撃(中)',
-    cnt: '2',
-  },
-  {
-    icon: '/images/attack-sign-3.png',
-    name: '攻撃Ⅲ',
-    detail: '敵チームのランドマークに攻撃(高)',
-    cnt: '1',
-  },
-]
-
 function Inventory() {
   const [inventoryBtn, setInventoryBtn] = useState(true)
   const [visible, setVisible] = useState(true)
@@ -280,30 +191,69 @@ function Inventory() {
   const [itemName, setItemName] = useState('')
   const [itemDetail, setItemDetail] = useState('')
 
+  const [cookies] = useCookies<
+    'accessToken',
+    {
+      accessToken?: string
+    }
+  >(['accessToken'])
+  console.log(cookies)
+  const inventoryInfo = useInventoryInfoQuery({
+    context: {
+      headers: {
+        Authorization: `Bearer ${cookies.accessToken ?? ''}`,
+      },
+    },
+    onError: (error) => {
+      console.error(error)
+    },
+  })
+
+  /*** アイテムの画像配列 ***/
+  const itemImages: { url: string }[] = []
+  inventoryInfo.data?.items.map((item) => {
+    itemImages.push({
+      url: `/images/${item.effect.toLowerCase()}-${item.level}.png`,
+    })
+  })
+  /*** コレクションの画像配列 ***/
+  const collectionImages: { url: string }[] = []
+  inventoryInfo.data?.galleries.map((gallary) => {
+    String(gallary.baseSignType).length != 1
+      ? gallary
+      : `0${gallary.toString()}`
+    collectionImages.push({
+      url: `/static/${gallary.toString()}rds_0${gallary.toString()}_r.png`,
+    })
+  })
+  /*** グループカラー(赤/緑) ***/
+  const groupColor = useMapPageInfoQuery().data?.user.group
+  console.log(groupColor)
+
   return (
     <Container
-      color={Color.Green}
+      color={groupColor}
       redImagePath="/images/bg-red.png"
       greenImagePath="/images/bg-green.png"
     >
       {inventoryBtn ? (
         <>
           <Head>アイテム</Head>
-          <SubBack color={Color.Green}>
+          <SubBack color={groupColor}>
             <SetContents>
-              {itemExplanation.map((item, i) => {
+              {inventoryInfo.data?.items.map((item, i) => {
                 return (
                   <Items
                     onClick={() => {
                       setVisible(false)
-                      setItemIcon(item.icon)
+                      setItemIcon(itemImages[i].url)
                       setItemName(item.name)
-                      setItemDetail(item.detail)
+                      setItemDetail(item.effect)
                     }}
                     key={i}
                   >
-                    <ItemsCount>{item.cnt}</ItemsCount>
-                    <img src={item.icon} width="70px"></img>
+                    <ItemsCount>{item.value}</ItemsCount>
+                    <img src={itemImages[i].url} width="70px"></img>
                   </Items>
                 )
               })}
@@ -313,21 +263,23 @@ function Inventory() {
       ) : (
         <>
           <Head>コレクション</Head>
-          <SubBack color={Color.Green}>
+          <SubBack color={groupColor}>
             <SetContents>
-              {colloects.map((item, i) => {
+              {inventoryInfo.data?.galleries.map((collection, i) => {
                 return (
                   <Items
                     onClick={() => {
                       setVisible(false)
-                      setItemIcon(item.icon)
-                      setItemName(item.name)
-                      setItemDetail(item.detail)
+                      setItemIcon(collectionImages[i].url)
+                      // setItemName(collection.)
+                      // setItemDetail(collection.detail)
                     }}
                     key={i}
                   >
-                    <ItemsCount>{item.cnt}</ItemsCount>
-                    <img src={item.icon} width="70px"></img>
+                    <ItemsCount>
+                      {String(collection.baseSignType).length}
+                    </ItemsCount>
+                    <img src={collectionImages[i].url} width="70px"></img>
                   </Items>
                 )
               })}

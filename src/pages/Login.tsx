@@ -53,6 +53,7 @@ function Login() {
       },
     },
     onError: (error) => {
+      console.error(error)
       if (error.message === 'user is not found') navigate('/team-select')
     },
   })
