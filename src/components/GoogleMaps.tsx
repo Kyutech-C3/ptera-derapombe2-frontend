@@ -3,6 +3,8 @@ import { CSSProperties, memo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { Color, MapPageInfoQuery } from '../graphql/generated'
 import MapActionButton from './MapActionButton'
+import PinRedImage from '../assets/images/pin-red.png'
+import PinGreenImage from '../assets/images/pin-green.png'
 
 type Markers = {
   position: google.maps.LatLngLiteral
@@ -89,7 +91,7 @@ function GoogleMaps(props: GoogleMaps) {
         icon:
           placedMarker.icon == Color.Red
             ? {
-                url: '../assets/images/pin-red.png',
+                url: PinRedImage,
                 scaledSize: new google.maps.Size(
                   zoomValue * markerSizeConstant,
                   zoomValue * markerSizeConstant
@@ -100,7 +102,7 @@ function GoogleMaps(props: GoogleMaps) {
                 ),
               }
             : {
-                url: '../assets/images/pin-green.png',
+                url: PinGreenImage,
                 scaledSize: new google.maps.Size(
                   zoomValue * markerSizeConstant,
                   zoomValue * markerSizeConstant

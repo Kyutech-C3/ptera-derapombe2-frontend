@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 import { Color } from '../graphql/generated'
+import Attack1Image from '../assets/images/attack-1.png'
+import PinGreenImage from '../assets/images/pin-green.png'
 
 const Container = styled.div<{ color: Color }>`
   width: 100vw;
@@ -127,7 +129,7 @@ const ResistanceItem = styled.div`
   height: 60px;
   border: 1px dotted;
   border-radius: 5px;
-  background-image: url('../assets/images/attack-1.png');
+  background-image: ${`url(${Attack1Image})`};
   background-size: cover;
 `
 
@@ -161,7 +163,7 @@ function SignDetail(props: SignDetail) {
             />
           </div>
         </PhotoImageDetail>
-        <ColorIcon src="../assets/images/icon-kitsune.png" alt="icon-kitsune" />
+        <ColorIcon src={PinGreenImage} alt="icon-kitsune" />
       </PhotoImage>
       <SignInfoContainer>
         <SignInfo>
