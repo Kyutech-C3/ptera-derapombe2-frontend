@@ -96,7 +96,9 @@ function TopBar(props: TopBar) {
         </Contents>
       </MainContents>
       <ExpProgressBar>
-        <ExpProgressDegree ratio={0.24} />
+        <ExpProgressDegree
+          ratio={data.user.expPoint / data.requiredExp[data.user.level]}
+        />
       </ExpProgressBar>
     </Container>
   )

@@ -14,13 +14,18 @@ export type Scalars = {
   Int: number;
   Float: number;
   DateTime: any;
-  Upload: any;
 };
 
 export enum Color {
   Green = 'GREEN',
   Red = 'RED'
 }
+
+export type Coordinate = {
+  __typename?: 'Coordinate';
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+};
 
 export type ExhumeResult = {
   __typename?: 'ExhumeResult';
@@ -50,10 +55,21 @@ export enum ItemEffect {
   Resistance = 'RESISTANCE'
 }
 
+export type Link = {
+  __typename?: 'Link';
+  createdAt: Scalars['DateTime'];
+  group: Color;
+  oneCoordinate: Coordinate;
+  otherCoordinate: Coordinate;
+  otherSignId: Scalars['String'];
+  polygonId?: Maybe<Scalars['String']>;
+  signId: Scalars['String'];
+};
+
 export type MapInfo = {
   __typename?: 'MapInfo';
+  links: Array<Link>;
   polygons: Array<Polygon>;
-  segments: Array<Segment>;
   signs: Array<Sign>;
 };
 
@@ -64,8 +80,9 @@ export type Mutation = {
   attackSign: UpdateSignData;
   captureSign: Sign;
   changeItem: Array<Item>;
+  connectSigns: MapInfo;
   deleteItem: Array<Item>;
-  exhumeSign: Array<ExhumeResult>;
+  exhumeSign: ExhumeResult;
   healSign: UpdateSignData;
   predictImage: PredictResult;
   registSign: Sign;
@@ -104,6 +121,12 @@ export type MutationChangeItemArgs = {
 };
 
 
+export type MutationConnectSignsArgs = {
+  otherSignId: Scalars['String'];
+  signId: Scalars['String'];
+};
+
+
 export type MutationDeleteItemArgs = {
   itemId: Scalars['String'];
   signId: Scalars['String'];
@@ -122,7 +145,7 @@ export type MutationHealSignArgs = {
 
 
 export type MutationPredictImageArgs = {
-  image: Scalars['Upload'];
+  file: Scalars['String'];
 };
 
 
@@ -132,11 +155,13 @@ export type MutationRegistSignArgs = {
 
 
 export type MutationUpdateUserArgs = {
+  avatarUrl: Scalars['String'];
   name: Scalars['String'];
 };
 
 export type Polygon = {
   __typename?: 'Polygon';
+  coordinates: Array<Coordinate>;
   createdAt: Scalars['DateTime'];
   group: Color;
   id: Scalars['String'];
@@ -152,7 +177,7 @@ export type PowerRatio = {
 
 export type PredictResult = {
   __typename?: 'PredictResult';
-  scores?: Maybe<Array<SuggestResult>>;
+  scores?: Maybe<Array<Array<SuggestResult>>>;
   status: Scalars['Boolean'];
 };
 
@@ -162,6 +187,7 @@ export type Query = {
   items: Array<Item>;
   mapInfo: MapInfo;
   powerRatio: PowerRatio;
+  requiredExp: Array<Scalars['Int']>;
   sign: Sign;
   user: User;
 };
@@ -178,39 +204,29 @@ export type RegistSignInput = {
   longitude: Scalars['Float'];
 };
 
-export type Segment = {
-  __typename?: 'Segment';
-  createdAt: Scalars['DateTime'];
-  id: Scalars['String'];
-  otherSignId: Scalars['String'];
-  signId: Scalars['String'];
-};
-
 export type Sign = {
   __typename?: 'Sign';
   baseSignTypes: Array<Scalars['Int']>;
+  coordinate: Coordinate;
   createdAt: Scalars['DateTime'];
-  group?: Maybe<Color>;
-  hitPoint?: Maybe<Scalars['Int']>;
+  group: Color;
+  hitPoint: Scalars['Int'];
   id: Scalars['String'];
   imagePath: Scalars['String'];
-  items?: Maybe<Array<Item>>;
-  latitude: Scalars['Float'];
-  longitude: Scalars['Float'];
+  items: Array<Item>;
   maxHitPoint: Scalars['Int'];
   maxItemSlot: Scalars['Int'];
   maxLinkSlot: Scalars['Int'];
-  owner?: Maybe<User>;
+  owner: User;
 };
 
 export type SignInfo = {
   __typename?: 'SignInfo';
   baseSignTypes: Array<Scalars['Int']>;
+  coordinate: Coordinate;
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
   imagePath: Scalars['String'];
-  latitude: Scalars['Float'];
-  longitude: Scalars['Float'];
   maxHitPoint: Scalars['Int'];
   maxItemSlot: Scalars['Int'];
   maxLinkSlot: Scalars['Int'];
@@ -253,7 +269,7 @@ export type AddUserMutation = { __typename?: 'Mutation', addUser: { __typename?:
 export type MapPageInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MapPageInfoQuery = { __typename?: 'Query', user: { __typename?: 'User', name: string, level: number, expPoint: number, group: Color, avatarUrl: string }, powerRatio: { __typename?: 'PowerRatio', green: number, red: number } };
+export type MapPageInfoQuery = { __typename?: 'Query', requiredExp: Array<number>, mapInfo: { __typename?: 'MapInfo', signs: Array<{ __typename?: 'Sign', id: string, imagePath: string, baseSignTypes: Array<number>, group: Color, maxHitPoint: number, hitPoint: number, items: Array<{ __typename?: 'Item', effect: ItemEffect, id: string, level: number, name: string, value: number }>, coordinate: { __typename?: 'Coordinate', latitude: number, longitude: number } }>, polygons: Array<{ __typename?: 'Polygon', group: Color, coordinates: Array<{ __typename?: 'Coordinate', latitude: number, longitude: number }> }>, links: Array<{ __typename?: 'Link', group: Color, otherCoordinate: { __typename?: 'Coordinate', latitude: number, longitude: number }, oneCoordinate: { __typename?: 'Coordinate', latitude: number, longitude: number } }> }, user: { __typename?: 'User', name: string, level: number, expPoint: number, group: Color, avatarUrl: string }, powerRatio: { __typename?: 'PowerRatio', green: number, red: number } };
 
 export type UserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -302,6 +318,45 @@ export type AddUserMutationResult = Apollo.MutationResult<AddUserMutation>;
 export type AddUserMutationOptions = Apollo.BaseMutationOptions<AddUserMutation, AddUserMutationVariables>;
 export const MapPageInfoDocument = gql`
     query MapPageInfo {
+  mapInfo {
+    signs {
+      id
+      imagePath
+      baseSignTypes
+      group
+      maxHitPoint
+      hitPoint
+      items {
+        effect
+        id
+        level
+        name
+        value
+      }
+      coordinate {
+        latitude
+        longitude
+      }
+    }
+    polygons {
+      group
+      coordinates {
+        latitude
+        longitude
+      }
+    }
+    links {
+      group
+      otherCoordinate {
+        latitude
+        longitude
+      }
+      oneCoordinate {
+        latitude
+        longitude
+      }
+    }
+  }
   user {
     name
     level
@@ -313,6 +368,7 @@ export const MapPageInfoDocument = gql`
     green
     red
   }
+  requiredExp
 }
     `;
 

@@ -4,11 +4,6 @@ import styled from 'styled-components'
 import { Color, MapPageInfoQuery } from '../graphql/generated'
 import MapActionButton from './MapActionButton'
 
-type Markers = {
-  position: google.maps.LatLngLiteral
-  icon: Color
-}
-
 const containerStyle: CSSProperties = {
   width: '100vw',
   height: '90vh',
@@ -21,36 +16,6 @@ const mapOptions: google.maps.MapOptions = {
   streetViewControl: false,
   fullscreenControl: false,
 }
-
-const positionA: google.maps.LatLngLiteral = {
-  lat: 33.88199160909438,
-  lng: 130.87870371446132,
-}
-
-const positionB: google.maps.LatLngLiteral = {
-  lat: 33.88220610094518,
-  lng: 130.8794740275319,
-}
-
-const positionC: google.maps.LatLngLiteral = {
-  lat: 33.881944125152216,
-  lng: 130.8789380227444,
-}
-
-const placedMarkers: Markers[] = [
-  {
-    position: positionA,
-    icon: Color.Red,
-  },
-  {
-    position: positionB,
-    icon: Color.Red,
-  },
-  {
-    position: positionC,
-    icon: Color.Green,
-  },
-]
 
 const markerSizeConstant = 5
 
@@ -83,11 +48,15 @@ function GoogleMaps(props: GoogleMaps) {
   })
 
   const onLoad = useCallback((map: google.maps.Map) => {
-    placedMarkers.map((placedMarker) => {
+    data.mapInfo.signs.map((signData) => {
+      const signPosition: google.maps.LatLngLiteral = {
+        lat: signData.coordinate.latitude,
+        lng: signData.coordinate.longitude,
+      }
       const marker = new google.maps.Marker({
-        position: placedMarker.position,
-        icon:
-          placedMarker.icon == Color.Red
+        position: signPosition,
+        icon: signData.group
+          ? signData.group === Color.Red
             ? {
                 url: '/images/pin-red.png',
                 scaledSize: new google.maps.Size(
@@ -109,40 +78,50 @@ function GoogleMaps(props: GoogleMaps) {
                   (zoomValue * markerSizeConstant) / 2,
                   zoomValue * markerSizeConstant - 11
                 ),
-              },
+              }
+          : null, // 誰にも取られていない時
       })
       marker.addListener('click', () => {
-        map.setCenter(placedMarker.position)
+        map.setCenter(signPosition)
         setShowAction(true)
       })
       marker.setMap(map)
     })
-
-    const path = new google.maps.Polyline({
-      path: [
-        { lat: positionA.lat, lng: positionA.lng },
-        { lat: positionB.lat, lng: positionB.lng },
-        { lat: positionC.lat, lng: positionC.lng },
-        { lat: positionA.lat, lng: positionA.lng },
-      ],
-      geodesic: true,
-      strokeColor: '#FF0000',
-      strokeWeight: 2,
+    data.mapInfo.links.map((link) => {
+      const mapPolyline = new google.maps.Polyline({
+        path: [
+          {
+            lat: link.oneCoordinate.latitude,
+            lng: link.oneCoordinate.longitude,
+          },
+          {
+            lat: link.otherCoordinate.latitude,
+            lng: link.otherCoordinate.longitude,
+          },
+        ],
+        geodesic: true,
+        strokeColor: link.group === Color.Red ? 'red' : 'green',
+        strokeWeight: 2,
+      })
+      mapPolyline.setMap(map)
     })
-    path.setMap(map)
-
-    const polygon = new google.maps.Polygon({
-      paths: [
-        { lat: positionA.lat, lng: positionA.lng },
-        { lat: positionB.lat, lng: positionB.lng },
-        { lat: positionC.lat, lng: positionC.lng },
-        { lat: positionA.lat, lng: positionA.lng },
-      ],
-      strokeOpacity: 0,
-      fillColor: '#FF0000',
-      fillOpacity: 0.15,
+    data.mapInfo.polygons.map((polygon) => {
+      const newPolygons: google.maps.LatLngLiteral[] = []
+      polygon.coordinates.map((value) => {
+        newPolygons.push({ lat: value.latitude, lng: value.longitude })
+      })
+      newPolygons.push({
+        lat: polygon.coordinates.slice(-1)[0].latitude,
+        lng: polygon.coordinates.slice(-1)[0].longitude,
+      })
+      const mapPolygon = new google.maps.Polygon({
+        paths: newPolygons,
+        strokeOpacity: 0,
+        fillColor: polygon.group === Color.Red ? 'red' : 'green',
+        fillOpacity: 0.15,
+      })
+      mapPolygon.setMap(map)
     })
-    polygon.setMap(map)
 
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
