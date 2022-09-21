@@ -214,6 +214,7 @@ export type Sign = {
   id: Scalars['String'];
   imagePath: Scalars['String'];
   items: Array<Item>;
+  linkNum: Scalars['Int'];
   maxHitPoint: Scalars['Int'];
   maxItemSlot: Scalars['Int'];
   maxLinkSlot: Scalars['Int'];
@@ -235,6 +236,7 @@ export type SignInfo = {
 export type SuggestResult = {
   __typename?: 'SuggestResult';
   score: Scalars['Float'];
+  signName: Scalars['String'];
   signType: Scalars['Int'];
 };
 
@@ -269,7 +271,7 @@ export type AddUserMutation = { __typename?: 'Mutation', addUser: { __typename?:
 export type MapPageInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MapPageInfoQuery = { __typename?: 'Query', requiredExp: Array<number>, mapInfo: { __typename?: 'MapInfo', signs: Array<{ __typename?: 'Sign', id: string, imagePath: string, baseSignTypes: Array<number>, group: Color, maxHitPoint: number, hitPoint: number, items: Array<{ __typename?: 'Item', effect: ItemEffect, id: string, level: number, name: string, value: number }>, coordinate: { __typename?: 'Coordinate', latitude: number, longitude: number } }>, polygons: Array<{ __typename?: 'Polygon', group: Color, coordinates: Array<{ __typename?: 'Coordinate', latitude: number, longitude: number }> }>, links: Array<{ __typename?: 'Link', group: Color, otherCoordinate: { __typename?: 'Coordinate', latitude: number, longitude: number }, oneCoordinate: { __typename?: 'Coordinate', latitude: number, longitude: number } }> }, user: { __typename?: 'User', name: string, level: number, expPoint: number, group: Color, avatarUrl: string }, powerRatio: { __typename?: 'PowerRatio', green: number, red: number } };
+export type MapPageInfoQuery = { __typename?: 'Query', requiredExp: Array<number>, mapInfo: { __typename?: 'MapInfo', signs: Array<{ __typename?: 'Sign', id: string, imagePath: string, baseSignTypes: Array<number>, group: Color, maxHitPoint: number, hitPoint: number, linkNum: number, items: Array<{ __typename?: 'Item', effect: ItemEffect, id: string, level: number, name: string, value: number }>, coordinate: { __typename?: 'Coordinate', latitude: number, longitude: number } }>, polygons: Array<{ __typename?: 'Polygon', group: Color, coordinates: Array<{ __typename?: 'Coordinate', latitude: number, longitude: number }> }>, links: Array<{ __typename?: 'Link', group: Color, otherCoordinate: { __typename?: 'Coordinate', latitude: number, longitude: number }, oneCoordinate: { __typename?: 'Coordinate', latitude: number, longitude: number } }> }, user: { __typename?: 'User', name: string, level: number, expPoint: number, group: Color, avatarUrl: string }, powerRatio: { __typename?: 'PowerRatio', green: number, red: number } };
 
 export type UserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -326,6 +328,7 @@ export const MapPageInfoDocument = gql`
       group
       maxHitPoint
       hitPoint
+      linkNum
       items {
         effect
         id

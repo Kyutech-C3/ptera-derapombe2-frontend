@@ -9,6 +9,7 @@ import { useMapPageInfoQuery } from '../graphql/generated'
 
 function Map() {
   const [displaySignDetail, setDisplaySignDetail] = useState(false)
+  const [signIndex, setSignIndex] = useState(0)
   const [cookies] = useCookies<
     'accessToken',
     {
@@ -30,14 +31,17 @@ function Map() {
     <>
       {displaySignDetail ? (
         <>
-          <SignDetail id="hogefuga" />
+          <SignDetail data={mapPageInfo.data} index={signIndex} />
           <HomeBtn />
         </>
       ) : (
         <>
           <GoogleMaps
             data={mapPageInfo.data}
-            showSignDetail={() => setDisplaySignDetail(true)}
+            showSignDetail={(index) => {
+              setDisplaySignDetail(true)
+              setSignIndex(index)
+            }}
           />
           <TopBar data={mapPageInfo.data} />
         </>

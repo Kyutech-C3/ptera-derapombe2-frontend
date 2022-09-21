@@ -33,7 +33,7 @@ const Blur = styled.div`
 
 type GoogleMaps = {
   data: MapPageInfoQuery
-  showSignDetail: () => void
+  showSignDetail: (index: number) => void
 }
 
 function GoogleMaps(props: GoogleMaps) {
@@ -41,6 +41,7 @@ function GoogleMaps(props: GoogleMaps) {
   const [map, setMap] = useState<google.maps.Map | null>(null)
   const [zoomValue, setZoomValue] = useState<number>(19)
   const [showAction, setShowAction] = useState(false)
+  const [selectedMarkerIndex, setSelectedMarkerIndex] = useState(0)
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -48,7 +49,7 @@ function GoogleMaps(props: GoogleMaps) {
   })
 
   const onLoad = useCallback((map: google.maps.Map) => {
-    data.mapInfo.signs.map((signData) => {
+    data.mapInfo.signs.map((signData, i) => {
       const signPosition: google.maps.LatLngLiteral = {
         lat: signData.coordinate.latitude,
         lng: signData.coordinate.longitude,
@@ -84,6 +85,7 @@ function GoogleMaps(props: GoogleMaps) {
       marker.addListener('click', () => {
         map.setCenter(signPosition)
         setShowAction(true)
+        setSelectedMarkerIndex(i)
       })
       marker.setMap(map)
     })
@@ -163,7 +165,7 @@ function GoogleMaps(props: GoogleMaps) {
           <Blur />
           <MapActionButton
             onClickCloseButton={() => setShowAction(false)}
-            onClickSignDetailButton={() => showSignDetail()}
+            onClickSignDetailButton={() => showSignDetail(selectedMarkerIndex)}
           />
         </>
       ) : (

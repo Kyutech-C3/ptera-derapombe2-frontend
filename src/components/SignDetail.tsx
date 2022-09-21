@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Color } from '../graphql/generated'
+import { Color, ItemEffect, MapPageInfoQuery } from '../graphql/generated'
 
 const Container = styled.div<{ color: Color }>`
   width: 100vw;
@@ -119,6 +120,7 @@ const ResistanceItemContent = styled.div`
   width: 33.3333%;
   text-align: center;
   margin-bottom: 10px;
+  font-size: 12px;
 `
 
 const ResistanceItem = styled.div<{ imagePath: string }>`
@@ -132,88 +134,122 @@ const ResistanceItem = styled.div<{ imagePath: string }>`
 `
 
 type SignDetail = {
-  id: string
+  data: MapPageInfoQuery
+  index: number
 }
 
 function SignDetail(props: SignDetail) {
-  const { id } = props
+  const { data, index } = props
+  const targetData = data.mapInfo.signs[index]
+  const [resistanceValueSum, setResistanceValueSum] = useState(0)
+  const [enduranceValueSum, setEnduranceValueSum] = useState(0)
+
+  useEffect(() => {
+    let resistance = 1
+    let endurance = 0
+    data.mapInfo.signs[index].items.map((item) => {
+      if (item.effect === ItemEffect.Resistance) {
+        resistance *= item.value
+      } else {
+        endurance += item.value
+      }
+    })
+    setResistanceValueSum(resistance)
+    setEnduranceValueSum(endurance)
+  }, [])
 
   return (
-    <Container color={Color.Red}>
-      <PhotoImage imageUrl="https://img.goo-net.com/sss/magazine/2019/09/06/cf6d1611f4852da31b6c339e10da7c0a.jpg">
+    <Container color={targetData.group}>
+      <PhotoImage imageUrl={targetData.imagePath}>
         <PhotoImageDetail>
           <SignLatLngTextContainer>
-            <SignLatLngText>緯度: 123.4567</SignLatLngText>
-            <SignLatLngText>経度: 123.4567</SignLatLngText>
+            <SignLatLngText>
+              緯度: {targetData.coordinate.latitude}
+            </SignLatLngText>
+            <SignLatLngText>
+              経度: {targetData.coordinate.longitude}
+            </SignLatLngText>
           </SignLatLngTextContainer>
           <div>
-            <SignImage
-              src="https://freesozai.jp/sozai/roadsign/rds_020.svg"
-              alt="rds_020"
-            />
-            <SignImage
-              src="https://freesozai.jp/sozai/roadsign/rds_020.svg"
-              alt="rds_020"
-            />
-            <SignImage
-              src="https://freesozai.jp/sozai/roadsign/rds_020.svg"
-              alt="rds_020"
-            />
+            {targetData.baseSignTypes.map((baseSignType) => {
+              const convertedBaseSignType: string =
+                String(baseSignType).length !== 1
+                  ? baseSignType.toString()
+                  : `0${baseSignType.toString()}`
+              return (
+                <SignImage
+                  src={`https://sign-gress-server.azurewebsites.net/static/${convertedBaseSignType}rds_0${convertedBaseSignType}_r.png`}
+                  alt={`${convertedBaseSignType}rds_0${convertedBaseSignType}_r`}
+                  key={convertedBaseSignType}
+                />
+              )
+            })}
           </div>
         </PhotoImageDetail>
-        <ColorIcon src="/images/icon-kitsune.png" alt="icon-kitsune" />
+        <ColorIcon
+          src={
+            targetData.group === Color.Red
+              ? '/images/icon-kitsune.png'
+              : '/images/icon-tanuki.png'
+          }
+          alt={targetData.group === Color.Red ? 'icon-kitsune' : 'icon-tanuki'}
+        />
       </PhotoImage>
       <SignInfoContainer>
         <SignInfo>
           <SignInfoTextContent>
             耐久値:
             <SignInfoText>
-              300<SignInfoAddText>+50</SignInfoAddText>
+              {targetData.hitPoint}
+              <SignInfoAddText>+{enduranceValueSum}</SignInfoAddText>
             </SignInfoText>
           </SignInfoTextContent>
-          <SignInfoTextContent>
+          {/* <SignInfoTextContent>
             経験値:<SignInfoText>20~40</SignInfoText> EXP
-          </SignInfoTextContent>
+          </SignInfoTextContent> */}
           <SignInfoTextContent>
             攻撃耐性値:
             <SignInfoText>
-              300<SignInfoAddText>+10</SignInfoAddText>
+              1<SignInfoAddText>x{resistanceValueSum}</SignInfoAddText>
             </SignInfoText>
           </SignInfoTextContent>
           <SignInfoTextContent>
-            リンク数:<SignInfoText>0/5</SignInfoText>
+            リンク数:<SignInfoText>{targetData.linkNum}/2</SignInfoText>
           </SignInfoTextContent>
         </SignInfo>
         <ProgressBar>
-          <ProgressDegree ratio={0.65} color={Color.Red}>
-            <span>{0.65 * 100}%</span>
+          <ProgressDegree
+            ratio={targetData.hitPoint / targetData.maxHitPoint}
+            color={Color.Red}
+          >
+            <span>{(targetData.hitPoint / targetData.maxHitPoint) * 100}%</span>
           </ProgressDegree>
         </ProgressBar>
         <ResistanceItems>
-          <ResistanceItemContent>
-            <ResistanceItem imagePath="/images/attack-1.png" />
-            <span>攻撃耐性 +50</span>
-          </ResistanceItemContent>
-          <ResistanceItemContent>
-            <ResistanceItem imagePath="/images/attack-1.png" />
-            <span>攻撃耐性 +50</span>
-          </ResistanceItemContent>
-          <ResistanceItemContent>
-            <ResistanceItem imagePath="/images/attack-1.png" />
-            <span>攻撃耐性 +50</span>
-          </ResistanceItemContent>
-          <ResistanceItemContent>
-            <ResistanceItem imagePath="/images/attack-1.png" />
-            <span>攻撃耐性 +50</span>
-          </ResistanceItemContent>
-          <ResistanceItemContent>
-            <ResistanceItem imagePath="/images/attack-1.png" />
-            <span>攻撃耐性 +50</span>
-          </ResistanceItemContent>
-          <ResistanceItemContent>
-            <ResistanceItem imagePath="/images/attack-1.png" />
-            <span>攻撃耐性 +50</span>
-          </ResistanceItemContent>
+          {targetData.items.map((item) => {
+            return (
+              <ResistanceItemContent key={item.id}>
+                <ResistanceItem
+                  imagePath={
+                    item.effect === ItemEffect.Endurance
+                      ? `/images/endurance-${item.level}.png`
+                      : `/images/attack-${item.level}.png`
+                  }
+                />
+                <span>
+                  {item.name} {item.effect === ItemEffect.Endurance ? '+' : 'x'}
+                  {item.value}
+                </span>
+              </ResistanceItemContent>
+            )
+          })}
+          {[...Array<string>(6 - targetData.items.length)].map((_, i) => {
+            return (
+              <ResistanceItemContent key={i}>
+                <ResistanceItem imagePath={''} />
+              </ResistanceItemContent>
+            )
+          })}
         </ResistanceItems>
       </SignInfoContainer>
     </Container>

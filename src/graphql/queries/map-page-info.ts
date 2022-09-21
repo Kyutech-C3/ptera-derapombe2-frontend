@@ -10,6 +10,7 @@ export default gql`
         group
         maxHitPoint
         hitPoint
+        linkNum
         items {
           effect
           id
