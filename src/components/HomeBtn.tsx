@@ -1,16 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AiOutlineHome } from 'react-icons/ai'
 import styled from 'styled-components'
 import { Color } from '../graphql/generated'
 
-const SetHome = styled(AiOutlineHome)<{ borderColor: Color }>`
+const SetHome = styled(AiOutlineHome)<{
+  borderColor: Color
+  isAction: boolean
+}>`
   position: absolute;
   margin: 0;
   padding: 10px;
   width: 40px;
   height: 40px;
   color: black;
+  box-shadow: 0px 3px 3px #8a939c;
   background-color: white;
   border-radius: 100%;
   border: 3px solid
@@ -25,9 +29,15 @@ const HomeLink = styled(Link)`
 `
 
 function HomeBtn() {
+  const [inventoryBtn, setInventoryBtn] = useState(true)
+
   return (
     <HomeLink to="/map">
-      <SetHome borderColor={Color.Green} />
+      <SetHome
+        onClick={() => setInventoryBtn(true)}
+        isAction={inventoryBtn}
+        borderColor={Color.Green}
+      />
     </HomeLink>
   )
 }
