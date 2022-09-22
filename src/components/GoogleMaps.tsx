@@ -33,12 +33,13 @@ const Blur = styled.div`
 
 type GoogleMaps = {
   data: MapPageInfoQuery
+  onClickAttackSign: (index: number) => void
   onClickExhumeSign: (index: number) => void
   showSignDetail: (index: number) => void
 }
 
 function GoogleMaps(props: GoogleMaps) {
-  const { data, onClickExhumeSign, showSignDetail } = props
+  const { data, onClickAttackSign, onClickExhumeSign, showSignDetail } = props
   const [map, setMap] = useState<google.maps.Map | null>(null)
   const [zoomValue, setZoomValue] = useState<number>(19)
   const [showAction, setShowAction] = useState(false)
@@ -166,6 +167,7 @@ function GoogleMaps(props: GoogleMaps) {
           <Blur />
           <MapActionButton
             onClickCloseButton={() => setShowAction(false)}
+            onClickAttackSign={() => onClickAttackSign(selectedMarkerIndex)}
             onClickExhumeSign={() => onClickExhumeSign(selectedMarkerIndex)}
             onClickSignDetailButton={() => showSignDetail(selectedMarkerIndex)}
           />

@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
+import AttackNotify from '../components/AttackNotify'
 import BottomNavigationBar from '../components/BottomNavigationBar'
 import ExhumeNotify from '../components/ExhumeNotify'
 import GoogleMaps from '../components/GoogleMaps'
+import MyAttackItemsModal from '../components/MyAttackItemsModal'
 import SignDetail from '../components/SignDetail'
 import TopBar from '../components/TopBar'
 import {
+  AttackSignMutation,
+  useAttackSignMutation,
   useExhumeSignMutation,
   useMapPageInfoQuery,
 } from '../graphql/generated'
@@ -14,6 +18,12 @@ function Map() {
   const [displaySignDetail, setDisplaySignDetail] = useState(false)
   const [signIndex, setSignIndex] = useState(0)
   const [showExhumeNotify, setShowExhumeNotify] = useState(false)
+  const [showAttackNotify, setShowAttackNotify] = useState(false)
+  const [showAttackSignIndex, setShowAttackSignIndex] = useState(0)
+  const [showAttackSignModal, setShowAttackSignModal] = useState(false)
+  const [attackResult, setAttackResult] = useState<AttackSignMutation | null>(
+    null
+  )
   const [cookies] = useCookies<
     'accessToken',
     {
@@ -28,6 +38,13 @@ function Map() {
     },
     onError: (error) => {
       console.error(error)
+    },
+  })
+  const [attackSign] = useAttackSignMutation({
+    context: {
+      headers: {
+        Authorization: `Bearer ${cookies.accessToken ?? ''}`,
+      },
     },
   })
   const [exhumeSign, { data }] = useExhumeSignMutation({
@@ -46,6 +63,14 @@ function Map() {
     }
   }, [showExhumeNotify, data])
 
+  useEffect(() => {
+    if (showAttackNotify) {
+      setTimeout(() => {
+        setShowAttackNotify(false)
+      }, 5000)
+    }
+  }, [showAttackNotify])
+
   return mapPageInfo.data ? (
     <>
       {displaySignDetail ? (
@@ -58,6 +83,10 @@ function Map() {
         <>
           <GoogleMaps
             data={mapPageInfo.data}
+            onClickAttackSign={(index) => {
+              setShowAttackSignIndex(index)
+              setShowAttackSignModal(true)
+            }}
             onClickExhumeSign={(index) => {
               void exhumeSign({
                 variables: {
@@ -73,6 +102,34 @@ function Map() {
             }}
           />
           {showExhumeNotify && data ? <ExhumeNotify data={data} /> : <></>}
+          {showAttackNotify && attackResult ? (
+            <AttackNotify data={attackResult} />
+          ) : (
+            <></>
+          )}
+          {showAttackSignModal ? (
+            <MyAttackItemsModal
+              doAttack={(selectedItemId) => {
+                void attackSign({
+                  variables: {
+                    signId:
+                      mapPageInfo.data?.mapInfo.signs[showAttackSignIndex].id ??
+                      '',
+                    itemId: selectedItemId,
+                  },
+                }).then((result) => {
+                  if (result.data) {
+                    setAttackResult(result.data)
+                    setShowAttackSignModal(false)
+                    setShowAttackNotify(true)
+                  }
+                })
+              }}
+              closeModal={() => setShowAttackSignModal(false)}
+            />
+          ) : (
+            <></>
+          )}
           <TopBar data={mapPageInfo.data} />
         </>
       )}
