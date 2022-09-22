@@ -22,7 +22,7 @@ const ActionButton = styled.div<{ color: Color }>`
   width: 60px;
   height: 60px;
   background-color: ${(props) =>
-    props.color == Color.Red ? '#ffe7e7' : '#eaffe7'};
+    props.color == Color.Red ? '#eaffe7' : '#ffe7e7'};
   border-radius: 50%;
   position: absolute;
   display: flex;
