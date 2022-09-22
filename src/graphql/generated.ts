@@ -384,7 +384,6 @@ export function useAddUserMutation(baseOptions?: Apollo.MutationHookOptions<AddU
 export type AddUserMutationHookResult = ReturnType<typeof useAddUserMutation>;
 export type AddUserMutationResult = Apollo.MutationResult<AddUserMutation>;
 export type AddUserMutationOptions = Apollo.BaseMutationOptions<AddUserMutation, AddUserMutationVariables>;
-
 export const AttackSignDocument = gql`
     mutation attackSign($itemId: String!, $signId: String!) {
   attackSign(itemId: $itemId, signId: $signId) {
@@ -400,34 +399,12 @@ export type AttackSignMutationFn = Apollo.MutationFunction<AttackSignMutation, A
  *
  * To run a mutation, you first call `useAttackSignMutation` within a React component and pass it any options that fit your needs.
  * When your component renders, `useAttackSignMutation` returns a tuple that includes:
-
-export const PredictImageDocument = gql`
-    mutation predictImage($file: String!) {
-  predictImage(file: $file) {
-    scores {
-      score
-      signType
-      signName
-    }
-    status
-  }
-}
-    `;
-export type PredictImageMutationFn = Apollo.MutationFunction<PredictImageMutation, PredictImageMutationVariables>;
-
-/**
- * __usePredictImageMutation__
- *
- * To run a mutation, you first call `usePredictImageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `usePredictImageMutation` returns a tuple that includes:
-
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
-
  * const [attackSignMutation, { data, loading, error }] = useAttackSignMutation({
  *   variables: {
  *      itemId: // value for 'itemId'
@@ -494,6 +471,50 @@ export type ExhumeSignMutationFn = Apollo.MutationFunction<ExhumeSignMutation, E
  *
  * To run a mutation, you first call `useExhumeSignMutation` within a React component and pass it any options that fit your needs.
  * When your component renders, `useExhumeSignMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [exhumeSignMutation, { data, loading, error }] = useExhumeSignMutation({
+ *   variables: {
+ *      signId: // value for 'signId'
+ *   },
+ * });
+ */
+export function useExhumeSignMutation(baseOptions?: Apollo.MutationHookOptions<ExhumeSignMutation, ExhumeSignMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ExhumeSignMutation, ExhumeSignMutationVariables>(ExhumeSignDocument, options);
+      }
+export type ExhumeSignMutationHookResult = ReturnType<typeof useExhumeSignMutation>;
+export type ExhumeSignMutationResult = Apollo.MutationResult<ExhumeSignMutation>;
+export type ExhumeSignMutationOptions = Apollo.BaseMutationOptions<ExhumeSignMutation, ExhumeSignMutationVariables>;
+export const PredictImageDocument = gql`
+    mutation predictImage($file: String!) {
+  predictImage(file: $file) {
+    scores {
+      score
+      signType
+      signName
+    }
+    status
+  }
+}
+    `;
+export type PredictImageMutationFn = Apollo.MutationFunction<PredictImageMutation, PredictImageMutationVariables>;
+
+/**
+ * __usePredictImageMutation__
+ *
+ * To run a mutation, you first call `usePredictImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePredictImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
  * const [predictImageMutation, { data, loading, error }] = usePredictImageMutation({
  *   variables: {
  *      file: // value for 'file'
@@ -532,28 +553,12 @@ export type RegistSignMutationFn = Apollo.MutationFunction<RegistSignMutation, R
  *
  * To run a mutation, you first call `useRegistSignMutation` within a React component and pass it any options that fit your needs.
  * When your component renders, `useRegistSignMutation` returns a tuple that includes:
-
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
-
- * const [exhumeSignMutation, { data, loading, error }] = useExhumeSignMutation({
- *   variables: {
- *      signId: // value for 'signId'
- *   },
- * });
- */
-export function useExhumeSignMutation(baseOptions?: Apollo.MutationHookOptions<ExhumeSignMutation, ExhumeSignMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ExhumeSignMutation, ExhumeSignMutationVariables>(ExhumeSignDocument, options);
-      }
-export type ExhumeSignMutationHookResult = ReturnType<typeof useExhumeSignMutation>;
-export type ExhumeSignMutationResult = Apollo.MutationResult<ExhumeSignMutation>;
-export type ExhumeSignMutationOptions = Apollo.BaseMutationOptions<ExhumeSignMutation, ExhumeSignMutationVariables>;
-
  * const [registSignMutation, { data, loading, error }] = useRegistSignMutation({
  *   variables: {
  *      baseSignTypes: // value for 'baseSignTypes'
@@ -569,7 +574,6 @@ export function useRegistSignMutation(baseOptions?: Apollo.MutationHookOptions<R
 export type RegistSignMutationHookResult = ReturnType<typeof useRegistSignMutation>;
 export type RegistSignMutationResult = Apollo.MutationResult<RegistSignMutation>;
 export type RegistSignMutationOptions = Apollo.BaseMutationOptions<RegistSignMutation, RegistSignMutationVariables>;
-
 export const MapPageInfoDocument = gql`
     query MapPageInfo {
   mapInfo {
