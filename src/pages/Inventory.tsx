@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import {
   Color,
+  Gallery,
+  Item,
   useInventoryInfoQuery,
   useMapPageInfoQuery,
 } from '../graphql/generated'
@@ -209,23 +211,51 @@ function Inventory() {
     },
   })
 
+  console.log('before grouped', inventoryInfo.data?.items)
+
   /*** アイテムの画像配列 ***/
-  const itemImages: { url: string }[] = []
-  inventoryInfo.data?.items.map((item) => {
-    itemImages.push({
-      url: `/images/${item.effect.toLowerCase()}-${item.level}.png`,
-    })
+  /* アイテム固有の値を格納 */
+  const groupedItems: { [itemId: string]: Item[] } = {}
+  inventoryInfo.data?.items.forEach((item) => {
+    if (typeof groupedItems[item.id] === 'undefined') {
+      groupedItems[item.id] = []
+    }
+    groupedItems[item.id].push(item)
+    // if (typeof groupedItems[`${item.id}-${item.level}`] === 'undefined') {
+    //   groupedItems[`${item.id}-${item.level}`] = []
+    // }
+    // groupedItems[`${item.id}-${item.level}`].push(item)
   })
-  /*** コレクションの画像配列 ***/
-  const collectionImages: { url: string }[] = []
-  inventoryInfo.data?.galleries.map((gallary) => {
-    String(gallary.baseSignType).length != 1
-      ? gallary
-      : `0${gallary.toString()}`
-    collectionImages.push({
-      url: `/static/${gallary.toString()}rds_0${gallary.toString()}_r.png`,
-    })
+  console.log('grouped', JSON.stringify(groupedItems, null, '\t'))
+  // Object.values()
+  // Object.keys()
+  /* 各アイテムごとにグループ分け */
+  const itemImages: { [itemId: string]: string } = {}
+  Object.keys(groupedItems).forEach((itemId) => {
+    itemImages[itemId] = `/images/${groupedItems[
+      itemId
+    ][0]?.effect.toLowerCase()}-${groupedItems[itemId][0]?.level}.png`
+    // itemImages.push({
+    //   url: `/images/${groupedItems[itemId][0]?.effect.toLowerCase()}-${
+    //     groupedItems[itemId][0]?.level
+    //   }.png`,
+    // })
   })
+
+  /*** コレクション ***/
+  const getGallery: Gallery[] = []
+  const collectionImages: string = getGallery.map((gallery) => {
+    String(gallery.baseSignType).length != 1
+      ? gallery.toString()
+      : `0${gallery.toString()}`
+    collectionImages.push(`/static/${gallery}rds_0${gallery}_r.png`)
+  })
+  // inventoryInfo.data?.galleries.forEach((number) => {
+  // const groupedCollections: { [collectionId: string]: any } = {}
+  // Object.keys(collectionImages.baseSignType).forEach((collectionId) => {
+  //   groupedCollections[collectionId] = collectionImages[collectionId][0]
+  // })
+
   /*** グループカラー(赤/緑) ***/
   const groupColor = useMapPageInfoQuery().data?.user.group
   console.log(groupColor)
@@ -241,19 +271,19 @@ function Inventory() {
           <Head>アイテム</Head>
           <SubBack color={groupColor}>
             <SetContents>
-              {inventoryInfo.data?.items.map((item, i) => {
+              {Object.values(groupedItems).map((items: Item[], i) => {
                 return (
                   <Items
                     onClick={() => {
                       setVisible(false)
-                      setItemIcon(itemImages[i].url)
-                      setItemName(item.name)
-                      setItemDetail(item.effect)
+                      setItemIcon(itemImages[items[0].id])
+                      setItemName(items[0].name)
+                      setItemDetail(items[0].effect)
                     }}
                     key={i}
                   >
-                    <ItemsCount>{item.value}</ItemsCount>
-                    <img src={itemImages[i].url} width="70px"></img>
+                    <ItemsCount>{items.length}</ItemsCount>
+                    <img src={itemImages[items[0].id]} width="70px"></img>
                   </Items>
                 )
               })}
@@ -265,21 +295,19 @@ function Inventory() {
           <Head>コレクション</Head>
           <SubBack color={groupColor}>
             <SetContents>
-              {inventoryInfo.data?.galleries.map((collection, i) => {
+              {getGallery.map((collection, i) => {
                 return (
                   <Items
                     onClick={() => {
                       setVisible(false)
-                      setItemIcon(collectionImages[i].url)
+                      setItemIcon(collectionImages)
                       // setItemName(collection.)
                       // setItemDetail(collection.detail)
                     }}
                     key={i}
                   >
-                    <ItemsCount>
-                      {String(collection.baseSignType).length}
-                    </ItemsCount>
-                    <img src={collectionImages[i].url} width="70px"></img>
+                    <ItemsCount>{collectionImages[i].length}</ItemsCount>
+                    <img src={collectionImages[i]} width="70px"></img>
                   </Items>
                 )
               })}
