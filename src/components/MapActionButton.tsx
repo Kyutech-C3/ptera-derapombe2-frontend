@@ -46,23 +46,63 @@ const DetailButton = styled(ActionButton)`
   top: -40px;
 `
 
+const GetButton = styled.div`
+  width: 60px;
+  height: 60px;
+  background-color: '#666666';
+  border-radius: 50%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+  top: -90px;
+`
+
 type MapActionButton = {
+  markerGroupColor: Color | null | undefined
   onClickCloseButton: () => void
+  onClickExhumeSign: () => void
+  onClickAttackSign: () => void
   onClickSignDetailButton: () => void
+  onClickGetButton: () => void
 }
 
 function MapActionButton(props: MapActionButton) {
-  const { onClickCloseButton, onClickSignDetailButton } = props
+  const {
+    markerGroupColor,
+    onClickCloseButton,
+    onClickExhumeSign,
+    onClickAttackSign,
+    onClickSignDetailButton,
+    onClickGetButton,
+  } = props
 
   return (
     <>
       <CloseButton onClick={onClickCloseButton}>
         <IoCloseOutline color="white" size="50" />
-        <DigButton color={Color.Green}>発掘</DigButton>
-        <AttackButton color={Color.Green}>攻撃</AttackButton>
-        <DetailButton color={Color.Green} onClick={onClickSignDetailButton}>
-          付与
-        </DetailButton>
+        {markerGroupColor ? (
+          <>
+            <DigButton color={markerGroupColor} onClick={onClickExhumeSign}>
+              発掘
+            </DigButton>
+            <AttackButton color={markerGroupColor} onClick={onClickAttackSign}>
+              攻撃
+            </AttackButton>
+            <DetailButton
+              color={markerGroupColor}
+              onClick={onClickSignDetailButton}
+            >
+              付与
+            </DetailButton>
+          </>
+        ) : (
+          <>
+            <GetButton onClick={onClickGetButton}>取得</GetButton>
+          </>
+        )}
       </CloseButton>
     </>
   )

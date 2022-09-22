@@ -3,7 +3,7 @@ import {
   setPersistence,
   signInWithPopup,
 } from 'firebase/auth'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { useCookies } from 'react-cookie'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -74,6 +74,15 @@ function Login() {
         console.error(error)
       })
   }
+
+  useLayoutEffect(() => {
+    const refresh = async () => {
+      await auth.currentUser?.getIdToken().then((token) => {
+        setCookie('accessToken', token)
+      })
+    }
+    void refresh()
+  }, [])
 
   useEffect(() => {
     if (cookies.accessToken !== undefined && result.data !== undefined) {
