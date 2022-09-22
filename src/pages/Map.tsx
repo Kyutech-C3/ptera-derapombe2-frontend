@@ -10,6 +10,7 @@ import TopBar from '../components/TopBar'
 import {
   AttackSignMutation,
   useAttackSignMutation,
+  useCaptureSignMutation,
   useExhumeSignMutation,
   useMapPageInfoQuery,
 } from '../graphql/generated'
@@ -48,6 +49,13 @@ function Map() {
     },
   })
   const [exhumeSign, { data }] = useExhumeSignMutation({
+    context: {
+      headers: {
+        Authorization: `Bearer ${cookies.accessToken ?? ''}`,
+      },
+    },
+  })
+  const [captureSign] = useCaptureSignMutation({
     context: {
       headers: {
         Authorization: `Bearer ${cookies.accessToken ?? ''}`,
@@ -99,6 +107,13 @@ function Map() {
             showSignDetail={(index) => {
               setDisplaySignDetail(true)
               setSignIndex(index)
+            }}
+            onClickGetButton={(index) => {
+              void captureSign({
+                variables: {
+                  signId: mapPageInfo.data?.mapInfo.signs[index].id ?? '',
+                },
+              })
             }}
           />
           {showExhumeNotify && data ? <ExhumeNotify data={data} /> : <></>}

@@ -299,6 +299,13 @@ export type AttackSignMutationVariables = Exact<{
 
 export type AttackSignMutation = { __typename?: 'Mutation', attackSign: { __typename?: 'UpdateSignData', expPoint: number, hitPointDiff: number } };
 
+export type CaptureSignMutationVariables = Exact<{
+  signId: Scalars['String'];
+}>;
+
+
+export type CaptureSignMutation = { __typename?: 'Mutation', captureSign: { __typename?: 'Sign', id: string } };
+
 export type ExhumeSignMutationVariables = Exact<{
   signId: Scalars['String'];
 }>;
@@ -396,6 +403,39 @@ export function useAttackSignMutation(baseOptions?: Apollo.MutationHookOptions<A
 export type AttackSignMutationHookResult = ReturnType<typeof useAttackSignMutation>;
 export type AttackSignMutationResult = Apollo.MutationResult<AttackSignMutation>;
 export type AttackSignMutationOptions = Apollo.BaseMutationOptions<AttackSignMutation, AttackSignMutationVariables>;
+export const CaptureSignDocument = gql`
+    mutation CaptureSign($signId: String!) {
+  captureSign(signId: $signId) {
+    id
+  }
+}
+    `;
+export type CaptureSignMutationFn = Apollo.MutationFunction<CaptureSignMutation, CaptureSignMutationVariables>;
+
+/**
+ * __useCaptureSignMutation__
+ *
+ * To run a mutation, you first call `useCaptureSignMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCaptureSignMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [captureSignMutation, { data, loading, error }] = useCaptureSignMutation({
+ *   variables: {
+ *      signId: // value for 'signId'
+ *   },
+ * });
+ */
+export function useCaptureSignMutation(baseOptions?: Apollo.MutationHookOptions<CaptureSignMutation, CaptureSignMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CaptureSignMutation, CaptureSignMutationVariables>(CaptureSignDocument, options);
+      }
+export type CaptureSignMutationHookResult = ReturnType<typeof useCaptureSignMutation>;
+export type CaptureSignMutationResult = Apollo.MutationResult<CaptureSignMutation>;
+export type CaptureSignMutationOptions = Apollo.BaseMutationOptions<CaptureSignMutation, CaptureSignMutationVariables>;
 export const ExhumeSignDocument = gql`
     mutation exhumeSign($signId: String!) {
   exhumeSign(signId: $signId) {
