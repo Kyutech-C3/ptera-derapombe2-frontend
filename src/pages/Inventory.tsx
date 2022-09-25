@@ -1,22 +1,22 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
+  BaseSign,
   Color,
-  Gallery,
   Item,
-  useInventoryInfoQuery,
+  useIventoryItemQuery,
   useMapPageInfoQuery,
-} from '../graphql/generated'
-import { useCookies } from 'react-cookie'
-import styled from 'styled-components'
-import { BsBoxSeam } from 'react-icons/bs'
-import { BiLibrary } from 'react-icons/bi'
-import HomeBtn from '../components/HomeBtn'
+} from "../graphql/generated";
+import { useCookies } from "react-cookie";
+import styled from "styled-components";
+import { BsBoxSeam } from "react-icons/bs";
+import { BiLibrary } from "react-icons/bi";
+import HomeBtn from "../components/HomeBtn";
 // import { key } from 'localforage'
 
 const Container = styled.div<{
-  color: Color
-  redImagePath: string
-  greenImagePath: string
+  color: Color;
+  redImagePath: string;
+  greenImagePath: string;
 }>`
   background-image: ${(props) => `url(
     ${props.color == Color.Red ? props.redImagePath : props.greenImagePath})`};
@@ -27,7 +27,7 @@ const Container = styled.div<{
   height: 100vh;
   justify-content: space-around;
   align-items: center;
-`
+`;
 /*** ヘッダー ***/
 const Head = styled.h2`
   margin: 0;
@@ -36,7 +36,7 @@ const Head = styled.h2`
   height: 6vh;
   text-align: center;
   transform: translateY(calc(100% / 6));
-`
+`;
 /*** フッター ***/
 const Foot = styled.footer`
   margin: 0;
@@ -44,14 +44,14 @@ const Foot = styled.footer`
   display: flex;
   width: 100vw;
   height: 100%;
-`
+`;
 
 /*** ボタン ***/
 const Btn = styled.button`
   margin: 0;
   border-radius: 0;
   text-align: center;
-`
+`;
 const SetBtn = styled(Btn)`
   display: flex;
   flex-direction: column;
@@ -60,11 +60,11 @@ const SetBtn = styled(Btn)`
   height: 100%;
   align-items: center;
   justify-content: space-around;
-`
+`;
 const Text = styled.span`
   font-size: 11px;
   color: black;
-`
+`;
 const CloseBtn = styled.button`
   display: inline-block;
   margin: 0;
@@ -76,7 +76,7 @@ const CloseBtn = styled.button`
   color: white;
   text-align: center;
   border-radius: 0 10px 10px 0;
-`
+`;
 
 /*** アイテム表示場所 ***/
 const SubBack = styled.article<{ color: Color }>`
@@ -88,9 +88,9 @@ const SubBack = styled.article<{ color: Color }>`
   background-color: rgb(255, 255, 255, 0.8);
   border: 3px solid;
   border-color: ${(props) =>
-    props.color == Color.Red ? '#ffe7e7' : '#eaffe7'};
+    props.color == Color.Red ? "#ffe7e7" : "#eaffe7"};
   border-radius: 20px;
-`
+`;
 const SetContents = styled.section`
   margin: 0 10px;
   display: grid;
@@ -102,15 +102,15 @@ const SetContents = styled.section`
   column-gap: 20px;
   justify-items: center;
   justify-content: center;
-`
+`;
 
 /*** インベントリ中のアイテム ***/
 const ItemBox = styled(SetBtn)<{ isAction: boolean }>`
-  background: ${(props) => (props.isAction ? 'transparent' : 'white')};
-`
+  background: ${(props) => (props.isAction ? "transparent" : "white")};
+`;
 const CollectBox = styled(SetBtn)<{ isAction: boolean }>`
-  background: ${(props) => (props.isAction ? 'white' : 'transparent')};
-`
+  background: ${(props) => (props.isAction ? "white" : "transparent")};
+`;
 const Items = styled.button`
   position: relative;
   margin: 0;
@@ -120,7 +120,7 @@ const Items = styled.button`
   background-color: transparent;
   align-items: center;
   text-align: center;
-`
+`;
 const ItemsCount = styled.div`
   position: absolute;
   margin: 0;
@@ -133,7 +133,7 @@ const ItemsCount = styled.div`
   background-color: rgb(220, 220, 220);
   border-radius: 100%;
   text-align: center;
-`
+`;
 
 /*** アイテムの詳細表示関連 ***/
 const ItemExWin = styled.div`
@@ -149,22 +149,22 @@ const ItemExWin = styled.div`
   box-shadow: -5px 5px 5px #8a939c;
   border-radius: 0 10px 10px 0;
   background-color: rgb(220, 220, 220);
-`
+`;
 const ItemDetails = styled.div`
   display: flex;
   background-color: transparent;
   width: 70vw;
-`
+`;
 const ItemExIcon = styled.div`
   padding: 10vh 5px;
   /* padding-left: 1vw; */
   width: 25vw;
   text-align: center;
-`
+`;
 const FlexColumn = styled.div`
   /* display: flex; */
   flex-direction: column;
-`
+`;
 const ItemExName = styled.div`
   margin: 0px;
   padding: 0 2.5vw;
@@ -174,7 +174,7 @@ const ItemExName = styled.div`
   font-size: 20px;
   text-align: left;
   overflow-wrap: break-word;
-`
+`;
 const ItemExDetail = styled.div`
   margin: 0px;
   padding: 0 2.5vw;
@@ -184,72 +184,84 @@ const ItemExDetail = styled.div`
   font-size: 16px;
   text-align: left;
   overflow-wrap: break-word;
-`
+`;
 
 function Inventory() {
-  const [inventoryBtn, setInventoryBtn] = useState(true)
-  const [visible, setVisible] = useState(true)
-  const [itemIcon, setItemIcon] = useState('')
-  const [itemName, setItemName] = useState('')
-  const [itemDetail, setItemDetail] = useState('')
+  const [inventoryBtn, setInventoryBtn] = useState(true);
+  const [visible, setVisible] = useState(true);
+  const [itemIcon, setItemIcon] = useState("");
+  const [itemName, setItemName] = useState("");
+  const [itemDetail, setItemDetail] = useState("");
 
   const [cookies] = useCookies<
-    'accessToken',
+    "accessToken",
     {
-      accessToken?: string
+      accessToken?: string;
     }
-  >(['accessToken'])
-  console.log(cookies)
-  const inventoryInfo = useInventoryInfoQuery({
+  >(["accessToken"]);
+  console.log(cookies);
+  const inventoryInfo = useIventoryItemQuery({
     context: {
       headers: {
-        Authorization: `Bearer ${cookies.accessToken ?? ''}`,
+        Authorization: `Bearer ${cookies.accessToken ?? ""}`,
       },
     },
     onError: (error) => {
-      console.error(error)
+      console.error(error);
     },
-  })
+  });
 
-  console.log('before grouped', inventoryInfo.data?.items)
+  console.log("before grouped", inventoryInfo.data?.items);
 
   /*** アイテムの画像配列 ***/
   /* アイテム固有の値を格納 */
-  const groupedItems: { [itemId: string]: Item[] } = {}
+  const groupedItems: { [itemId: string]: Item[] } = {};
   inventoryInfo.data?.items.forEach((item) => {
-    if (typeof groupedItems[item.id] === 'undefined') {
-      groupedItems[item.id] = []
+    if (typeof groupedItems[item.id] === "undefined") {
+      groupedItems[item.id] = [];
     }
-    groupedItems[item.id].push(item)
+    groupedItems[item.id].push(item);
     // if (typeof groupedItems[`${item.id}-${item.level}`] === 'undefined') {
     //   groupedItems[`${item.id}-${item.level}`] = []
     // }
     // groupedItems[`${item.id}-${item.level}`].push(item)
-  })
-  console.log('grouped', JSON.stringify(groupedItems, null, '\t'))
+  });
+  console.log("grouped", JSON.stringify(groupedItems, null, "\t"));
   // Object.values()
   // Object.keys()
   /* 各アイテムごとにグループ分け */
-  const itemImages: { [itemId: string]: string } = {}
+  const itemImages: { [itemId: string]: string } = {};
   Object.keys(groupedItems).forEach((itemId) => {
     itemImages[itemId] = `/images/${groupedItems[
       itemId
-    ][0]?.effect.toLowerCase()}-${groupedItems[itemId][0]?.level}.png`
+    ][0]?.effect.toLowerCase()}-${groupedItems[itemId][0]?.level}.png`;
     // itemImages.push({
     //   url: `/images/${groupedItems[itemId][0]?.effect.toLowerCase()}-${
     //     groupedItems[itemId][0]?.level
     //   }.png`,
     // })
-  })
+  });
 
   /*** コレクション ***/
-  const getGallery: Gallery[] = []
-  const collectionImages: string = getGallery.map((gallery) => {
-    String(gallery.baseSignType).length != 1
-      ? gallery.toString()
-      : `0${gallery.toString()}`
-    collectionImages.push(`/static/${gallery}rds_0${gallery}_r.png`)
-  })
+  const groupedGalleries: { [galleryId: string]: BaseSign[] } = {};
+  inventoryInfo.data?.galleries.map((gallery) => {
+    if (typeof groupedGalleries[gallery.baseSign.id] === "undefined") {
+      groupedGalleries[gallery.baseSign.id] = [];
+    }
+    groupedGalleries[gallery.baseSign.id].push(gallery.baseSign);
+  });
+
+  const baseSign: BaseSign[] = []; //?!?!?!
+  const galleryImages: { [galleryId: string]: string } = {};
+  Object.keys(groupedGalleries).forEach((galleryId) => {
+    galleryImages[galleryId] =
+      String(baseSign.type).length != 1
+        ? groupedGalleries.baseSign.toString()
+        : `0${groupedGalleries.baseSign.toString()}`;
+    collectionImages.push(`/static/${gallery}rds_0${gallery}_r.png`);
+  });
+  console.log(groupColor);
+
   // inventoryInfo.data?.galleries.forEach((number) => {
   // const groupedCollections: { [collectionId: string]: any } = {}
   // Object.keys(collectionImages.baseSignType).forEach((collectionId) => {
@@ -257,8 +269,8 @@ function Inventory() {
   // })
 
   /*** グループカラー(赤/緑) ***/
-  const groupColor = useMapPageInfoQuery().data?.user.group
-  console.log(groupColor)
+  const groupColor = useMapPageInfoQuery().data?.user.group;
+  console.log(groupColor);
 
   return (
     <Container
@@ -275,17 +287,17 @@ function Inventory() {
                 return (
                   <Items
                     onClick={() => {
-                      setVisible(false)
-                      setItemIcon(itemImages[items[0].id])
-                      setItemName(items[0].name)
-                      setItemDetail(items[0].effect)
+                      setVisible(false);
+                      setItemIcon(itemImages[items[0].id]);
+                      setItemName(items[0].name);
+                      setItemDetail(items[0].effect);
                     }}
                     key={i}
                   >
                     <ItemsCount>{items.length}</ItemsCount>
                     <img src={itemImages[items[0].id]} width="70px"></img>
                   </Items>
-                )
+                );
               })}
             </SetContents>
           </SubBack>
@@ -299,8 +311,8 @@ function Inventory() {
                 return (
                   <Items
                     onClick={() => {
-                      setVisible(false)
-                      setItemIcon(collectionImages)
+                      setVisible(false);
+                      setItemIcon(collectionImages);
                       // setItemName(collection.)
                       // setItemDetail(collection.detail)
                     }}
@@ -309,7 +321,7 @@ function Inventory() {
                     <ItemsCount>{collectionImages[i].length}</ItemsCount>
                     <img src={collectionImages[i]} width="70px"></img>
                   </Items>
-                )
+                );
               })}
             </SetContents>
           </SubBack>
@@ -319,7 +331,7 @@ function Inventory() {
         <ItemExWin>
           <ItemDetails
             onClick={() => {
-              setInventoryBtn(false)
+              setInventoryBtn(false);
             }}
             // key={i}
           >
@@ -338,8 +350,8 @@ function Inventory() {
       <Foot>
         <ItemBox
           onClick={() => {
-            setInventoryBtn(true)
-            setVisible(true)
+            setInventoryBtn(true);
+            setVisible(true);
           }}
           isAction={inventoryBtn}
         >
@@ -348,8 +360,8 @@ function Inventory() {
         </ItemBox>
         <CollectBox
           onClick={() => {
-            setInventoryBtn(false)
-            setVisible(true)
+            setInventoryBtn(false);
+            setVisible(true);
           }}
           isAction={inventoryBtn}
         >
@@ -358,7 +370,7 @@ function Inventory() {
         </CollectBox>
       </Foot>
     </Container>
-  )
+  );
 }
 
-export default Inventory
+export default Inventory;

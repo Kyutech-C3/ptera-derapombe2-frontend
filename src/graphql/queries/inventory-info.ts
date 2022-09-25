@@ -1,7 +1,14 @@
-import { gql } from '@apollo/client'
+import { gql } from "@apollo/client";
 
 export default gql`
-  query InventoryInfo {
+  query IventoryItem {
+    galleries {
+      baseSign {
+        id
+        name
+        type
+      }
+    }
     items {
       effect
       id
@@ -9,8 +16,5 @@ export default gql`
       name
       value
     }
-    galleries {
-      baseSignType
-    }
   }
-`
+`;
