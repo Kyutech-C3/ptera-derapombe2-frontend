@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import {
+  BaseSign,
   Color,
   Gallery,
   Item,
@@ -189,7 +190,7 @@ const ItemExDetail = styled.div`
 function Inventory() {
   const [inventoryBtn, setInventoryBtn] = useState(true)
   const [visible, setVisible] = useState(true)
-  const [itemIcon, setItemIcon] = useState('')
+  const [itemIcon, setItemIcon] = useState<string>('')
   const [itemName, setItemName] = useState('')
   const [itemDetail, setItemDetail] = useState('')
 
@@ -243,9 +244,13 @@ function Inventory() {
   })
 
   /*** コレクション ***/
-  const getGallery: Gallery[] = []
-  const collectionImages: string = getGallery.map((gallery) => {
-    String(gallery.baseSignType).length != 1
+  let getGallery: Gallery[] = []
+  if (inventoryInfo.data?.galleries) {
+    getGallery = inventoryInfo.data?.galleries
+  }
+  const collectionImages: string[] = []
+  getGallery.map((gallery) => {
+    String(gallery.baseSign).length != 1
       ? gallery.toString()
       : `0${gallery.toString()}`
     collectionImages.push(`/static/${gallery}rds_0${gallery}_r.png`)
@@ -300,7 +305,7 @@ function Inventory() {
                   <Items
                     onClick={() => {
                       setVisible(false)
-                      setItemIcon(collectionImages)
+                      setItemIcon(collectionImages[i])
                       // setItemName(collection.)
                       // setItemDetail(collection.detail)
                     }}

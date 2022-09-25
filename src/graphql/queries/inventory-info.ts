@@ -10,7 +10,28 @@ export default gql`
       value
     }
     galleries {
-      baseSignType
+      baseSign {
+        id
+        name
+        type
+      }
+      sign {
+        baseSigns {
+          id
+          name
+          type
+        }
+        coordinate {
+          latitude
+          longitude
+        }
+        createdAt
+        id
+        imagePath
+        maxHitPoint
+        maxItemSlot
+        maxLinkSlot
+      }
     }
   }
 `
